@@ -1,6 +1,11 @@
 /// <reference lib="webworker" />
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { precacheAndRoute } from 'workbox-precaching';
+
 declare const self: ServiceWorkerGlobalScope;
+
+// Required by vite-plugin-pwa injectManifest strategy
+precacheAndRoute(self.__WB_MANIFEST);
 
 // Handle Periodic Background Sync — fires on Android Chrome when app is closed
 self.addEventListener('periodicsync', (event: any) => {
