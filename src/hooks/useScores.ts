@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { saveScore, loadAllScores } from '../db/scoresDb';
 import { scoreKey, teamsMatch } from '../utils/teamNames';
+import { playGoalSound } from '../utils/sound';
+import { showGoalNotification } from '../utils/notifications';
 import GAME_DATA from '../data/gameData';
 import type { ScoreRecord, ScoreInfo } from '../types';
 
@@ -81,6 +83,8 @@ export function useScores(): { scores: Map<string, ScoreRecord>; info: ScoreInfo
   const [scores, setScores] = useState<Map<string, ScoreRecord>>(new Map());
   const [info, setInfo] = useState<ScoreInfo>({ loading: true, lastUpdated: null, count: 0, espnOk: null });
   const fullDone = useRef(false);
+  // Track previous live scores to detect goals
+  const prevLive = useRef<Map<string, { hs: number; as_: number }>>(new Map());
 
   async function runFetch(full: boolean): Promise<void> {
     const dates = getDates(full);
@@ -91,6 +95,34 @@ export function useScores(): { scores: Map<string, ScoreRecord>; info: ScoreInfo
 
     const espnOk = results.length > 0;
     const cached = await loadAllScores();
+
+    // Detect goals in live matches (skip on initial full history load)
+    if (fullDone.current) {
+      for (const r of results) {
+        if (r.status !== 'live') continue;
+        const prev = prevLive.current.get(r.key);
+        if (!prev) continue; // first time seeing this live match — no baseline yet
+        const prevTotal = prev.hs + prev.as_;
+        const newTotal = r.hs + r.as_;
+        if (newTotal > prevTotal) {
+          const match = GAME_DATA.matches.find(
+            m => scoreKey(m.home, m.away) === r.key,
+          );
+          if (match) {
+            playGoalSound();
+            showGoalNotification(match.home, match.away, r.hs, r.as_);
+          }
+        }
+      }
+    }
+
+    // Update previous live scores baseline
+    for (const r of results) {
+      if (r.status === 'live') {
+        prevLive.current.set(r.key, { hs: r.hs, as_: r.as_ });
+      }
+    }
+
     for (const r of results) {
       const existing = cached.get(r.key);
       if (existing?.status === 'ft' && r.status === 'live') continue;
