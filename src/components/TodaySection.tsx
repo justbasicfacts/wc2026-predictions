@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Card, Text, Badge, Box, Stack, UnstyledButton } from '@mantine/core';
 import { scoreKey } from '../utils/teamNames';
+import { flag } from '../utils/flags';
 import PredRow from './PredRow';
 import type { Match, ScoreRecord } from '../types';
 
@@ -59,7 +60,10 @@ function MatchRow({ match, scores, highlight = 'today' }: MatchRowProps) {
   return (
     <Card p={0} style={{ border: `solid 1px ${borderColor}`, background: bg, overflow: 'hidden' }}>
       <Box px="md" py={14} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-        <Text fw={700} fz="md" ta="right" lh={1.3} style={{ flex: 1 }}>{match.home}</Text>
+        <Box ta="right" style={{ flex: 1 }}>
+          <Text fz={22} lh={1}>{flag(match.home)}</Text>
+          <Text fw={700} fz="sm" lh={1.3}>{match.home}</Text>
+        </Box>
         <Box ta="center" style={{ minWidth: 90, flexShrink: 0 }}>
           {isLive ? (
             <>
@@ -78,7 +82,10 @@ function MatchRow({ match, scores, highlight = 'today' }: MatchRowProps) {
             </>
           )}
         </Box>
-        <Text fw={700} fz="md" ta="left" lh={1.3} style={{ flex: 1 }}>{match.away}</Text>
+        <Box ta="left" style={{ flex: 1 }}>
+          <Text fz={22} lh={1}>{flag(match.away)}</Text>
+          <Text fw={700} fz="sm" lh={1.3}>{match.away}</Text>
+        </Box>
       </Box>
 
       <Box px="md" pb={10} style={{ borderTop: '1px solid rgba(255,255,255,.06)', background: 'rgba(0,0,0,.25)' }}>

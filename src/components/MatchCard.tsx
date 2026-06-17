@@ -3,6 +3,7 @@ import type { Match, ScoreRecord } from '../types';
 
 import PredRow from './PredRow';
 import { scoreKey } from '../utils/teamNames';
+import { flag } from '../utils/flags';
 
 interface MatchCardProps {
   match: Match;
@@ -36,7 +37,10 @@ export default function MatchCard({ match, scores }: MatchCardProps) {
     <Card mb="xs" p={0} style={{ border: `1px solid ${borderColor}`, overflow: 'hidden' }}>
       {/* Score row */}
       <Box px={10} py={8} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-        <Text fw={600} fz="sm" ta="right" lh={1.2} style={{ flex: 1 }}>{match.home}</Text>
+        <Box ta="right" style={{ flex: 1 }}>
+          <Text fz={18} lh={1}>{flag(match.home)}</Text>
+          <Text fw={600} fz="sm" lh={1.2}>{match.home}</Text>
+        </Box>
         <Box ta="center" style={{ minWidth: 72, flexShrink: 0 }}>
           {isLive ? (
             <>
@@ -57,7 +61,10 @@ export default function MatchCard({ match, scores }: MatchCardProps) {
             </>
           )}
         </Box>
-        <Text fw={600} fz="sm" ta="left" lh={1.2} style={{ flex: 1 }}>{match.away}</Text>
+        <Box ta="left" style={{ flex: 1 }}>
+          <Text fz={18} lh={1}>{flag(match.away)}</Text>
+          <Text fw={600} fz="sm" lh={1.2}>{match.away}</Text>
+        </Box>
       </Box>
 
       {/* Predictions */}
