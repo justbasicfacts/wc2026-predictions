@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from 'react';
-import { saveScore, loadAllScores } from '../db/scoresDb';
 import { scoreKey, teamsMatch } from '../utils/teamNames';
 import { playGoalSound } from '../utils/sound';
 import { showGoalNotification } from '../utils/notifications';
@@ -86,7 +85,6 @@ export function useScores(): { scores: Map<string, ScoreRecord>; info: ScoreInfo
   const fullDone = useRef(false);
   const hasLive = useRef(false);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  // Track previous live scores to detect goals
   const prevLive = useRef<Map<string, { hs: number; as_: number }>>(new Map());
 
   async function runFetch(full: boolean): Promise<void> {
@@ -98,7 +96,7 @@ export function useScores(): { scores: Map<string, ScoreRecord>; info: ScoreInfo
 
     const espnOk = results.length > 0;
 
-    // Detect goals in live matches (skip on initial full history load)
+    // Detect goals
     if (fullDone.current) {
       for (const r of results) {
         if (r.status !== 'live') continue;
@@ -111,12 +109,11 @@ export function useScores(): { scores: Map<string, ScoreRecord>; info: ScoreInfo
       }
     }
 
-    // Update previous live scores baseline
     for (const r of results) {
       if (r.status === 'live') prevLive.current.set(r.key, { hs: r.hs, as_: r.as_ });
     }
 
-    // Update state immediately from fetch results (don't wait for DB round-trip)
+    // Update state directly — no DB involved
     setScores(prev => {
       const next = new Map(prev);
       for (const r of results) {
@@ -126,20 +123,10 @@ export function useScores(): { scores: Map<string, ScoreRecord>; info: ScoreInfo
       }
       return next;
     });
-    setInfo(prev => ({ loading: false, lastUpdated: new Date(), count: prev.count, espnOk }));
+    setInfo({ loading: false, lastUpdated: new Date(), count: results.length, espnOk });
     fullDone.current = true;
 
-    // Persist to DB in background (don't await — UI already updated)
-    void (async () => {
-      const cached = await loadAllScores();
-      for (const r of results) {
-        const existing = cached.get(r.key);
-        if (existing?.status === 'ft' && r.status === 'live') continue;
-        void saveScore(r.key, { hs: r.hs, as_: r.as_, status: r.status, clock: r.clock });
-      }
-    })();
-
-    // Switch polling speed based on whether any match is live
+    // Adaptive polling
     const nowLive = results.some(r => r.status === 'live');
     if (nowLive !== hasLive.current) {
       hasLive.current = nowLive;
@@ -149,40 +136,27 @@ export function useScores(): { scores: Map<string, ScoreRecord>; info: ScoreInfo
   }
 
   useEffect(() => {
-    void loadAllScores().then(cached => {
-      setScores(new Map(cached));
-      setInfo(i => ({ ...i, count: cached.size }));
-    });
     void runFetch(true);
 
-    // Poll every 5 min while idle, 60s when live — timer managed dynamically in runFetch
     timerRef.current = setInterval(() => void runFetch(false), REFRESH_IDLE_MS);
 
-    // Refresh immediately when user returns to the app (tab/PWA focus)
     const onVisible = () => {
       if (document.visibilityState === 'visible') void runFetch(false);
     };
     document.addEventListener('visibilitychange', onVisible);
 
-    // Listen for service worker message after background sync
     const onSwMessage = (e: MessageEvent) => {
       if ((e.data as { type?: string })?.type === 'SCORES_UPDATED') void runFetch(false);
     };
     navigator.serviceWorker?.addEventListener('message', onSwMessage);
 
-    // Periodic Background Sync — Android Chrome only
-    // Lets the service worker fetch scores even when the app is closed
     void (async () => {
       try {
         const reg = await navigator.serviceWorker?.ready;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const ps = (reg as any)?.periodicSync;
-        if (ps) {
-          await ps.register('fetch-scores', { minInterval: REFRESH_LIVE_MS });
-        }
-      } catch {
-        // Periodic Background Sync not supported or permission denied — silent fail
-      }
+        if (ps) await ps.register('fetch-scores', { minInterval: REFRESH_LIVE_MS });
+      } catch { /* not supported */ }
     })();
 
     return () => {
