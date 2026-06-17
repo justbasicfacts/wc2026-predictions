@@ -1,13 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { MantineProvider, createTheme } from '@mantine/core';
+import '@fontsource-variable/space-grotesk';
 import '@mantine/core/styles.css';
 import './App.css';
 import App from './App';
 
 const theme = createTheme({
   primaryColor: 'blue',
-  fontFamily: "'Segoe UI', system-ui, sans-serif",
+  fontFamily: "'Space Grotesk Variable', 'Space Grotesk', system-ui, sans-serif",
   colors: {
     dark: [
       '#C1C2C5', '#A6A7AB', '#909296', '#5C5F66',

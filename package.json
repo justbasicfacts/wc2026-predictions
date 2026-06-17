@@ -9,6 +9,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@fontsource-variable/space-grotesk": "^5.2.10",
     "@mantine/core": "^7.17.4",
     "@mantine/hooks": "^7.17.4",
     "@tabler/icons-react": "^3.31.0",
