@@ -80,7 +80,7 @@ async function fetchDate(dateStr: string): Promise<FetchedScore[]> {
   return out;
 }
 
-export function useScores(): { scores: Map<string, ScoreRecord>; info: ScoreInfo } {
+export function useScores(): { scores: Map<string, ScoreRecord>; info: ScoreInfo; forceRefresh: () => void } {
   const [scores, setScores] = useState<Map<string, ScoreRecord>>(new Map());
   const [info, setInfo] = useState<ScoreInfo>({ loading: true, lastUpdated: null, count: 0, espnOk: null });
   const fullDone = useRef(false);
