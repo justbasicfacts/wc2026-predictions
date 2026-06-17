@@ -49,14 +49,14 @@ const LEGEND = [
 ];
 
 export default function App() {
-  const { scores, info } = useScores();
+  const { scores, info, forceRefresh } = useScores();
   const [section, setSection] = useState('all');
   const standings = useMemo(() => calcStandings(scores), [scores]);
 
   return (
     <Box maw={720} mx="auto">
       <InstallBanner />
-      <Header info={info} />
+      <Header info={info} onRefresh={forceRefresh} />
       <Box p="sm" pb={60}>
         <TodaySection matches={GAME_DATA.matches} scores={scores} />
         <Leaderboard standings={standings} />

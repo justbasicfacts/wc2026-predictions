@@ -189,5 +189,7 @@ export function useScores(): { scores: Map<string, ScoreRecord>; info: ScoreInfo
     };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  return { scores, info };
+  const forceRefresh = () => void runFetch(false);
+
+  return { scores, info, forceRefresh };
 }

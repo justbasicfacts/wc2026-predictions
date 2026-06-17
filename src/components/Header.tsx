@@ -7,9 +7,10 @@ import type { ScoreInfo } from '../types';
 
 interface HeaderProps {
   info: ScoreInfo;
+  onRefresh: () => void;
 }
 
-export default function Header({ info }: HeaderProps) {
+export default function Header({ info, onRefresh }: HeaderProps) {
   const statusColor = info.loading ? 'yellow' : info.espnOk === false ? 'red' : 'green';
   const StatusIcon = info.loading ? IconLoader : info.espnOk === false ? IconAlertCircle : IconCircleCheck;
 
@@ -72,7 +73,7 @@ export default function Header({ info }: HeaderProps) {
 
         {/* Status row */}
         <Group gap={6} align="center" wrap="nowrap">
-          <ThemeIcon size={13} radius="xl" color={statusColor} variant="filled" style={{ flexShrink: 0 }}>
+          <ThemeIcon size={13} radius="xl" color={statusColor} variant="filled" style={{ flexShrink: 0, cursor: 'pointer' }} onClick={onRefresh}>
             <StatusIcon size={9} />
           </ThemeIcon>
           <Text fz={10} c="dimmed" style={{ flex: 1, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>

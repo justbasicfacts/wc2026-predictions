@@ -10,7 +10,13 @@ declare const self: ServiceWorkerGlobalScope;
 
 // Take control immediately on install/activate so new assets are used right away
 self.addEventListener('install', () => self.skipWaiting());
-self.addEventListener('activate', (event: ExtendableEvent) => event.waitUntil(self.clients.claim()));
+self.addEventListener('activate', (event: ExtendableEvent) => {
+  event.waitUntil(
+    caches.keys()
+      .then(keys => Promise.all(keys.map(k => caches.delete(k))))
+      .then(() => self.clients.claim())
+  );
+});
 
 // Handle Periodic Background Sync (Android Chrome only)
 self.addEventListener('periodicsync', (event: any) => {
