@@ -140,8 +140,42 @@ export function useScores(): { scores: Map<string, ScoreRecord>; info: ScoreInfo
       setInfo(i => ({ ...i, count: cached.size }));
     });
     void runFetch(true);
+
+    // Poll every 5 min while app is open
     const t = setInterval(() => void runFetch(false), REFRESH_MS);
-    return () => clearInterval(t);
+
+    // Refresh immediately when user returns to the app (tab/PWA focus)
+    const onVisible = () => {
+      if (document.visibilityState === 'visible') void runFetch(false);
+    };
+    document.addEventListener('visibilitychange', onVisible);
+
+    // Listen for service worker message after background sync
+    const onSwMessage = (e: MessageEvent) => {
+      if ((e.data as { type?: string })?.type === 'SCORES_UPDATED') void runFetch(false);
+    };
+    navigator.serviceWorker?.addEventListener('message', onSwMessage);
+
+    // Periodic Background Sync — Android Chrome only
+    // Lets the service worker fetch scores even when the app is closed
+    void (async () => {
+      try {
+        const reg = await navigator.serviceWorker?.ready;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const ps = (reg as any)?.periodicSync;
+        if (ps) {
+          await ps.register('fetch-scores', { minInterval: REFRESH_MS });
+        }
+      } catch {
+        // Periodic Background Sync not supported or permission denied — silent fail
+      }
+    })();
+
+    return () => {
+      clearInterval(t);
+      document.removeEventListener('visibilitychange', onVisible);
+      navigator.serviceWorker?.removeEventListener('message', onSwMessage);
+    };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return { scores, info };
