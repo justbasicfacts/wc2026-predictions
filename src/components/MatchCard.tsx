@@ -35,19 +35,19 @@ export default function MatchCard({ match, scores }: MatchCardProps) {
   return (
     <Card mb="xs" p={0} style={{ border: `1px solid ${borderColor}`, overflow: 'hidden' }}>
       {/* Score row */}
-      <Box px="sm" py={10} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+      <Box px={10} py={8} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
         <Text fw={600} fz="sm" ta="right" lh={1.2} style={{ flex: 1 }}>{match.home}</Text>
-        <Box ta="center" style={{ minWidth: 80, flexShrink: 0 }}>
+        <Box ta="center" style={{ minWidth: 72, flexShrink: 0 }}>
           {isLive ? (
             <>
-              <Text fw={900} fz="md" c="red.5" style={{ letterSpacing: 2 }}>{hs}–{as_}</Text>
+              <Text fw={900} fz="lg" c="red.5" style={{ letterSpacing: 2 }}>{hs}–{as_}</Text>
               <Badge color="red" size="xs" variant="filled" style={{ animation: 'pulse 1s infinite' }}>
                 LIVE {live?.clock ?? ''}
               </Badge>
             </>
           ) : played ? (
             <>
-              <Text fw={900} fz="md" style={{ letterSpacing: 2 }}>{hs}–{as_}</Text>
+              <Text fw={900} fz="lg" style={{ letterSpacing: 2 }}>{hs}–{as_}</Text>
               <Text fz={10} c="dimmed">FT</Text>
             </>
           ) : (
@@ -61,7 +61,8 @@ export default function MatchCard({ match, scores }: MatchCardProps) {
       </Box>
 
       {/* Predictions */}
-      <Box px="sm" pb={8} pt={8} style={{ borderTop: '1px solid rgba(255,255,255,.05)', background: 'rgba(0,0,0,.18)' }}>
+      <Box px={8} pt={4} pb={6} style={{ borderTop: '1px solid rgba(255,255,255,.05)', background: 'rgba(0,0,0,.18)' }}>
+        <Text fz={8} tt="uppercase" c="dimmed" mb={4} style={{ letterSpacing: 1 }}>Predictions</Text>
         <PredRow match={match} hs={hs ?? null} as_={as_ ?? null} played={played} />
       </Box>
     </Card>

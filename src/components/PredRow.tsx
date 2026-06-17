@@ -29,15 +29,15 @@ export default function PredRow({ match, hs, as_, played }: PredRowProps) {
         const pts = played && gh != null ? calcPoints(hs, as_, gh, ga) : 0;
 
         return (
-          <Box key={p} p={6} style={{ borderRadius: 7, textAlign: 'center', ...CL_STYLES[cl] }}>
-            <Text fz={9} tt="uppercase" c="dimmed" fw={600} mb={2} style={{ letterSpacing: 0.4 }}>
+          <Box key={p} style={{ borderRadius: 6, textAlign: 'center', padding: '4px 2px', ...CL_STYLES[cl] }}>
+            <Text fz={8} tt="uppercase" c="dimmed" fw={600} mb={1} style={{ letterSpacing: 0.3 }}>
               {p}
             </Text>
-            <Text fz={13} fw={700}>
+            <Text fz={11} fw={700} lh={1.2}>
               {gh != null ? `${gh}–${ga}` : '—'}
             </Text>
             {played && gh != null && (
-              <Text fz={9} mt={2} c={pts > 0 ? 'green.5' : 'dimmed'} fw={pts > 0 ? 700 : 400}>
+              <Text fz={8} c={pts > 0 ? 'green.5' : 'dimmed'} fw={pts > 0 ? 700 : 400}>
                 {pts > 0 ? `+${pts}p` : '0p'}
               </Text>
             )}
