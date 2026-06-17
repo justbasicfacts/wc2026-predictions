@@ -5,7 +5,7 @@ const ALIASES: Record<string, string[]> = {
   'cape verde': ['cape verde', 'cabo verde'],
   'curaçao': ['curacao', 'curaçao'],
   'curacao': ['curacao', 'curaçao'],
-  'dr congo': ['dr congo', 'congo dr', 'democratic republic of congo'],
+  'dr congo': ['dr congo', 'congo dr', 'democratic republic of congo', 'democratic republic of the congo', 'congo', 'drc'],
   'united states': ['united states', 'usa', 'united states of america'],
 };
 

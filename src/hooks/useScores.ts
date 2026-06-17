@@ -7,7 +7,8 @@ import GAME_DATA from '../data/gameData';
 import type { ScoreRecord, ScoreInfo } from '../types';
 
 const TOURNAMENT_START = new Date('2026-06-11');
-const REFRESH_MS = 5 * 60 * 1000;
+const REFRESH_IDLE_MS = 5 * 60 * 1000;
+const REFRESH_LIVE_MS = 60 * 1000;
 
 function getDates(full: boolean): string[] {
   if (!full) {
@@ -83,6 +84,8 @@ export function useScores(): { scores: Map<string, ScoreRecord>; info: ScoreInfo
   const [scores, setScores] = useState<Map<string, ScoreRecord>>(new Map());
   const [info, setInfo] = useState<ScoreInfo>({ loading: true, lastUpdated: null, count: 0, espnOk: null });
   const fullDone = useRef(false);
+  const hasLive = useRef(false);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   // Track previous live scores to detect goals
   const prevLive = useRef<Map<string, { hs: number; as_: number }>>(new Map());
 
@@ -132,6 +135,14 @@ export function useScores(): { scores: Map<string, ScoreRecord>; info: ScoreInfo
     setScores(new Map(all));
     setInfo({ loading: false, lastUpdated: new Date(), count: all.size, espnOk });
     fullDone.current = true;
+
+    // Switch polling speed based on whether any match is live
+    const nowLive = results.some(r => r.status === 'live');
+    if (nowLive !== hasLive.current) {
+      hasLive.current = nowLive;
+      if (timerRef.current) clearInterval(timerRef.current);
+      timerRef.current = setInterval(() => void runFetch(false), nowLive ? REFRESH_LIVE_MS : REFRESH_IDLE_MS);
+    }
   }
 
   useEffect(() => {
@@ -141,8 +152,8 @@ export function useScores(): { scores: Map<string, ScoreRecord>; info: ScoreInfo
     });
     void runFetch(true);
 
-    // Poll every 5 min while app is open
-    const t = setInterval(() => void runFetch(false), REFRESH_MS);
+    // Poll every 5 min while idle, 60s when live — timer managed dynamically in runFetch
+    timerRef.current = setInterval(() => void runFetch(false), REFRESH_IDLE_MS);
 
     // Refresh immediately when user returns to the app (tab/PWA focus)
     const onVisible = () => {
@@ -164,7 +175,7 @@ export function useScores(): { scores: Map<string, ScoreRecord>; info: ScoreInfo
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const ps = (reg as any)?.periodicSync;
         if (ps) {
-          await ps.register('fetch-scores', { minInterval: REFRESH_MS });
+          await ps.register('fetch-scores', { minInterval: REFRESH_LIVE_MS });
         }
       } catch {
         // Periodic Background Sync not supported or permission denied — silent fail
@@ -172,7 +183,7 @@ export function useScores(): { scores: Map<string, ScoreRecord>; info: ScoreInfo
     })();
 
     return () => {
-      clearInterval(t);
+      if (timerRef.current) clearInterval(timerRef.current);
       document.removeEventListener('visibilitychange', onVisible);
       navigator.serviceWorker?.removeEventListener('message', onSwMessage);
     };
