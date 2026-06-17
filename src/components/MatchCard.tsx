@@ -6,7 +6,7 @@ import { scoreKey } from '../utils/teamNames';
 
 interface MatchCardProps {
   match: Match;
-  scores: Map<string, ScoreRecord>;
+  scores: Record<string, ScoreRecord>;
 }
 
 function isTodayMatch(dateStr: string): boolean {
@@ -18,7 +18,7 @@ function isTodayMatch(dateStr: string): boolean {
 
 export default function MatchCard({ match, scores }: MatchCardProps) {
   const key = scoreKey(match.home, match.away);
-  const live = scores.get(key);
+  const live = scores[key];
   const hs = live?.hs ?? match.home_score;
   const as_ = live?.as_ ?? match.away_score;
   const status = live?.status ?? (match.home_score != null ? 'ft' : 'upcoming');

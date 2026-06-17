@@ -3,7 +3,7 @@ import type { Match, ScoreRecord } from '../types';
 
 interface MatchListProps {
   matches: Match[];
-  scores: Map<string, ScoreRecord>;
+  scores: Record<string, ScoreRecord>;
   section: string;
 }
 

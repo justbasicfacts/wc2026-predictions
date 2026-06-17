@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useReducer, useEffect, useRef } from 'react';
 import { scoreKey, teamsMatch } from '../utils/teamNames';
 import { playGoalSound } from '../utils/sound';
 import { showGoalNotification } from '../utils/notifications';
@@ -26,7 +26,7 @@ function getDates(full: boolean): string[] {
   return dates;
 }
 
-interface FetchedScore {
+export interface FetchedScore {
   key: string;
   hs: number;
   as_: number;
@@ -79,13 +79,30 @@ async function fetchDate(dateStr: string): Promise<FetchedScore[]> {
   return out;
 }
 
-export function useScores(): { scores: Map<string, ScoreRecord>; info: ScoreInfo; forceRefresh: () => void } {
-  const [scores, setScores] = useState<Map<string, ScoreRecord>>(new Map());
-  const [info, setInfo] = useState<ScoreInfo>({ loading: true, lastUpdated: null, count: 0, espnOk: null });
+type ScoresAction = { type: 'merge'; results: FetchedScore[] };
+
+function scoresReducer(state: Record<string, ScoreRecord>, action: ScoresAction): Record<string, ScoreRecord> {
+  if (action.type === 'merge') {
+    const next = { ...state };
+    let changed = false;
+    for (const r of action.results) {
+      const existing = next[r.key];
+      if (existing?.status === 'ft' && r.status === 'live') continue;
+      next[r.key] = { matchKey: r.key, hs: r.hs, as_: r.as_, status: r.status, clock: r.clock, savedAt: Date.now() };
+      changed = true;
+    }
+    return changed ? next : state;
+  }
+  return state;
+}
+
+export function useScores(): { scores: Record<string, ScoreRecord>; info: ScoreInfo; forceRefresh: () => void } {
+  const [scores, dispatch] = useReducer(scoresReducer, {});
+  const [info, setInfo] = useInfoState();
   const fullDone = useRef(false);
   const hasLive = useRef(false);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const prevLive = useRef<Map<string, { hs: number; as_: number }>>(new Map());
+  const prevLive = useRef<Record<string, { hs: number; as_: number }>>({});
 
   async function runFetch(full: boolean): Promise<void> {
     const dates = getDates(full);
@@ -96,11 +113,10 @@ export function useScores(): { scores: Map<string, ScoreRecord>; info: ScoreInfo
 
     const espnOk = results.length > 0;
 
-    // Detect goals
     if (fullDone.current) {
       for (const r of results) {
         if (r.status !== 'live') continue;
-        const prev = prevLive.current.get(r.key);
+        const prev = prevLive.current[r.key];
         if (!prev) continue;
         if (r.hs + r.as_ > prev.hs + prev.as_) {
           const match = GAME_DATA.matches.find(m => scoreKey(m.home, m.away) === r.key);
@@ -110,23 +126,13 @@ export function useScores(): { scores: Map<string, ScoreRecord>; info: ScoreInfo
     }
 
     for (const r of results) {
-      if (r.status === 'live') prevLive.current.set(r.key, { hs: r.hs, as_: r.as_ });
+      if (r.status === 'live') prevLive.current[r.key] = { hs: r.hs, as_: r.as_ };
     }
 
-    // Update state directly — no DB involved
-    setScores(prev => {
-      const next = new Map(prev);
-      for (const r of results) {
-        const existing = next.get(r.key);
-        if (existing?.status === 'ft' && r.status === 'live') continue;
-        next.set(r.key, { matchKey: r.key, hs: r.hs, as_: r.as_, status: r.status, clock: r.clock, savedAt: Date.now() });
-      }
-      return next;
-    });
+    dispatch({ type: 'merge', results });
     setInfo({ loading: false, lastUpdated: new Date(), count: results.length, espnOk });
     fullDone.current = true;
 
-    // Adaptive polling
     const nowLive = results.some(r => r.status === 'live');
     if (nowLive !== hasLive.current) {
       hasLive.current = nowLive;
@@ -137,18 +143,15 @@ export function useScores(): { scores: Map<string, ScoreRecord>; info: ScoreInfo
 
   useEffect(() => {
     void runFetch(true);
-
     timerRef.current = setInterval(() => void runFetch(false), REFRESH_IDLE_MS);
 
-    const onVisible = () => {
-      if (document.visibilityState === 'visible') void runFetch(false);
-    };
+    const onVisible = () => { if (document.visibilityState === 'visible') void runFetch(false); };
     document.addEventListener('visibilitychange', onVisible);
 
-    const onSwMessage = (e: MessageEvent) => {
+    const onSwMsg = (e: MessageEvent) => {
       if ((e.data as { type?: string })?.type === 'SCORES_UPDATED') void runFetch(false);
     };
-    navigator.serviceWorker?.addEventListener('message', onSwMessage);
+    navigator.serviceWorker?.addEventListener('message', onSwMsg);
 
     void (async () => {
       try {
@@ -162,11 +165,19 @@ export function useScores(): { scores: Map<string, ScoreRecord>; info: ScoreInfo
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
       document.removeEventListener('visibilitychange', onVisible);
-      navigator.serviceWorker?.removeEventListener('message', onSwMessage);
+      navigator.serviceWorker?.removeEventListener('message', onSwMsg);
     };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const forceRefresh = () => void runFetch(false);
-
   return { scores, info, forceRefresh };
+}
+
+// Separate hook to avoid re-render coupling with scores reducer
+function useInfoState() {
+  const [info, setInfoRaw] = useReducer(
+    (_: ScoreInfo, next: ScoreInfo) => next,
+    { loading: true, lastUpdated: null, count: 0, espnOk: null }
+  );
+  return [info, setInfoRaw] as const;
 }

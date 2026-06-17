@@ -12,7 +12,7 @@ function isToday(dateStr: string): boolean {
 
 interface TodaySectionProps {
   matches: Match[];
-  scores: Map<string, ScoreRecord>;
+  scores: Record<string, ScoreRecord>;
 }
 
 export default function TodaySection({ matches, scores }: TodaySectionProps) {
@@ -36,7 +36,7 @@ export default function TodaySection({ matches, scores }: TodaySectionProps) {
         <Stack gap="xs">
           {todayMatches.map((match, i) => {
             const key = scoreKey(match.home, match.away);
-            const live = scores.get(key);
+            const live = scores[key];
             const hs = live?.hs ?? match.home_score;
             const as_ = live?.as_ ?? match.away_score;
             const status = live?.status ?? (match.home_score != null ? 'ft' : 'upcoming');

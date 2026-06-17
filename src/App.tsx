@@ -13,12 +13,12 @@ import { calcPoints } from './utils/scoring';
 import { scoreKey } from './utils/teamNames';
 import type { Standing } from './types';
 
-function calcStandings(scores: Map<string, { hs: number; as_: number }>): Standing[] {
+function calcStandings(scores: Record<string, { hs: number; as_: number }>): Standing[] {
   const totals = Object.fromEntries(GAME_DATA.players.map(p => [p, 0]));
 
   for (const m of GAME_DATA.matches) {
     const key = scoreKey(m.home, m.away);
-    const live = scores.get(key);
+    const live = scores[key];
     const hs = live?.hs ?? m.home_score;
     const as_ = live?.as_ ?? m.away_score;
     if (hs == null || as_ == null) continue;
