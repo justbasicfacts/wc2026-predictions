@@ -97,44 +97,47 @@ export function useScores(): { scores: Map<string, ScoreRecord>; info: ScoreInfo
       .flatMap(r => r.value);
 
     const espnOk = results.length > 0;
-    const cached = await loadAllScores();
 
     // Detect goals in live matches (skip on initial full history load)
     if (fullDone.current) {
       for (const r of results) {
         if (r.status !== 'live') continue;
         const prev = prevLive.current.get(r.key);
-        if (!prev) continue; // first time seeing this live match — no baseline yet
-        const prevTotal = prev.hs + prev.as_;
-        const newTotal = r.hs + r.as_;
-        if (newTotal > prevTotal) {
-          const match = GAME_DATA.matches.find(
-            m => scoreKey(m.home, m.away) === r.key,
-          );
-          if (match) {
-            playGoalSound();
-            showGoalNotification(match.home, match.away, r.hs, r.as_);
-          }
+        if (!prev) continue;
+        if (r.hs + r.as_ > prev.hs + prev.as_) {
+          const match = GAME_DATA.matches.find(m => scoreKey(m.home, m.away) === r.key);
+          if (match) { playGoalSound(); showGoalNotification(match.home, match.away, r.hs, r.as_); }
         }
       }
     }
 
     // Update previous live scores baseline
     for (const r of results) {
-      if (r.status === 'live') {
-        prevLive.current.set(r.key, { hs: r.hs, as_: r.as_ });
-      }
+      if (r.status === 'live') prevLive.current.set(r.key, { hs: r.hs, as_: r.as_ });
     }
 
-    for (const r of results) {
-      const existing = cached.get(r.key);
-      if (existing?.status === 'ft' && r.status === 'live') continue;
-      await saveScore(r.key, { hs: r.hs, as_: r.as_, status: r.status, clock: r.clock });
-    }
-    const all = await loadAllScores();
-    setScores(new Map(all));
-    setInfo({ loading: false, lastUpdated: new Date(), count: all.size, espnOk });
+    // Update state immediately from fetch results (don't wait for DB round-trip)
+    setScores(prev => {
+      const next = new Map(prev);
+      for (const r of results) {
+        const existing = next.get(r.key);
+        if (existing?.status === 'ft' && r.status === 'live') continue;
+        next.set(r.key, { matchKey: r.key, hs: r.hs, as_: r.as_, status: r.status, clock: r.clock, savedAt: Date.now() });
+      }
+      return next;
+    });
+    setInfo(prev => ({ loading: false, lastUpdated: new Date(), count: prev.count, espnOk }));
     fullDone.current = true;
+
+    // Persist to DB in background (don't await — UI already updated)
+    void (async () => {
+      const cached = await loadAllScores();
+      for (const r of results) {
+        const existing = cached.get(r.key);
+        if (existing?.status === 'ft' && r.status === 'live') continue;
+        void saveScore(r.key, { hs: r.hs, as_: r.as_, status: r.status, clock: r.clock });
+      }
+    })();
 
     // Switch polling speed based on whether any match is live
     const nowLive = results.some(r => r.status === 'live');
