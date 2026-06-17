@@ -3,6 +3,9 @@
 body {
   background: #080f1c;
   min-height: 100vh;
+  font-family: 'Space Grotesk Variable', 'Space Grotesk', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 @keyframes pulse {
