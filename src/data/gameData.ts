@@ -1,4 +1,6 @@
-const GAME_DATA = {
+import type { GameData } from '../types';
+
+const GAME_DATA: GameData = {
   "players": [
     "Anil",
     "Emre",

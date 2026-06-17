@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="96" fill="#0c2040"/>
+  <circle cx="256" cy="256" r="180" fill="none" stroke="#3b82f6" stroke-width="16"/>
+  <!-- football pentagon pattern -->
+  <circle cx="256" cy="256" r="50" fill="#3b82f6"/>
+  <polygon points="256,106 290,196 386,196 310,252 338,348 256,292 174,348 202,252 126,196 222,196" fill="none" stroke="#3b82f6" stroke-width="12" stroke-linejoin="round"/>
+  <text x="256" y="430" text-anchor="middle" font-family="system-ui,sans-serif" font-size="72" font-weight="800" fill="#e2e8f0">WC26</text>
+</svg>
