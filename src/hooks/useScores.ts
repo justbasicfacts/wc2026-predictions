@@ -60,9 +60,9 @@ async function fetchDate(dateStr: string): Promise<FetchedScore[]> {
     const aScore = parseInt(aC.score as string) || 0;
 
     const statusType = (comp.status as Record<string, unknown>)?.type as Record<string, string>;
-    const sn = statusType?.name || '';
-    const isLive = sn.toLowerCase().includes('in') && !sn.toLowerCase().includes('final');
-    const isFt = sn.toLowerCase().includes('final') || sn.toLowerCase().includes('full');
+    const state = statusType?.state || '';
+    const isLive = state === 'in';
+    const isFt = state === 'post';
     if (!isLive && !isFt) continue;
 
     const statusObj = comp.status as Record<string, unknown>;
