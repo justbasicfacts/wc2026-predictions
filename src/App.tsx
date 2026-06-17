@@ -51,7 +51,8 @@ const LEGEND = [
 export default function App() {
   const { scores, info, forceRefresh } = useScores();
   const [section, setSection] = useState('all');
-  const standings = useMemo(() => calcStandings(scores), [scores]);
+  // info.lastUpdated changes every fetch; scores is a stable object ref so alone won't trigger useMemo
+  const standings = useMemo(() => calcStandings(scores), [scores, info.lastUpdated]);
 
   return (
     <Box maw={720} mx="auto">
