@@ -1,6 +1,8 @@
-import { Box, Group, Text, ThemeIcon, Title } from '@mantine/core';
-import { IconAlertCircle, IconBallFootball, IconCircleCheck, IconLoader } from '@tabler/icons-react';
-
+import { useState } from 'react';
+import { Box, Group, Text, ThemeIcon, Title, ActionIcon, Tooltip } from '@mantine/core';
+import { IconAlertCircle, IconBallFootball, IconBell, IconBellOff, IconCircleCheck, IconLoader, IconTestPipe } from '@tabler/icons-react';
+import { requestNotificationPermission, showGoalNotification } from '../utils/notifications';
+import { playGoalSound } from '../utils/sound';
 import type { ScoreInfo } from '../types';
 
 interface HeaderProps {
@@ -14,6 +16,20 @@ export default function Header({ info }: HeaderProps) {
     : `Updated ${info.lastUpdated?.toLocaleTimeString()} · ${info.count} scores cached · auto-refresh 5 min`;
 
   const StatusIcon = info.loading ? IconLoader : info.espnOk === false ? IconAlertCircle : IconCircleCheck;
+
+  const [notifPerm, setNotifPerm] = useState<NotificationPermission>(
+    'Notification' in window ? Notification.permission : 'denied',
+  );
+
+  const handleNotifToggle = async () => {
+    if (notifPerm === 'granted') return; // can't revoke programmatically
+    const perm = await requestNotificationPermission();
+    setNotifPerm(perm);
+    if (perm === 'granted') playGoalSound(); // preview the sound
+  };
+
+  const notifGranted = notifPerm === 'granted';
+  const notifDenied = notifPerm === 'denied';
 
   return (
     <Box
@@ -86,13 +102,57 @@ export default function Header({ info }: HeaderProps) {
         <Text c="dimmed" fz="xs" mb={8}>
           USA · Canada · Mexico · June–July 2026
         </Text>
-        <Group gap={6} align="center">
+        <Group gap={8} align="center">
           <ThemeIcon size={14} radius="xl" color={statusColor} variant="filled">
             <StatusIcon size={10} />
           </ThemeIcon>
-          <Text fz={11} c="dimmed">
+          <Text fz={11} c="dimmed" style={{ flex: 1 }}>
             {statusMsg}
           </Text>
+
+          {/* Test notification button — dev only */}
+          {notifGranted && window.location.hostname === 'localhost' && (
+            <Tooltip label="Test goal notification + sound" position="bottom" withArrow>
+              <ActionIcon
+                size="sm"
+                variant="subtle"
+                color="yellow"
+                onClick={() => {
+                  playGoalSound();
+                  showGoalNotification('Turkey', 'Brazil', 1, 0);
+                }}
+                aria-label="Test goal notification"
+              >
+                <IconTestPipe size={13} />
+              </ActionIcon>
+            </Tooltip>
+          )}
+
+          {/* Notification toggle */}
+          {'Notification' in window && (
+            <Tooltip
+              label={
+                notifGranted
+                  ? 'Goal notifications on'
+                  : notifDenied
+                  ? 'Notifications blocked — enable in browser settings'
+                  : 'Enable goal notifications'
+              }
+              position="bottom"
+              withArrow
+            >
+              <ActionIcon
+                size="sm"
+                variant={notifGranted ? 'filled' : 'subtle'}
+                color={notifGranted ? 'green' : notifDenied ? 'red' : 'gray'}
+                onClick={handleNotifToggle}
+                disabled={notifDenied}
+                aria-label="Toggle goal notifications"
+              >
+                {notifGranted ? <IconBell size={13} /> : <IconBellOff size={13} />}
+              </ActionIcon>
+            </Tooltip>
+          )}
         </Group>
       </Box>
     </Box>
