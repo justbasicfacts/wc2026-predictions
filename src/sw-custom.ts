@@ -8,6 +8,10 @@ declare const self: ServiceWorkerGlobalScope;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 (self as any).__precacheManifest = (self as any).__WB_MANIFEST;
 
+// Take control immediately on install/activate so new assets are used right away
+self.addEventListener('install', () => self.skipWaiting());
+self.addEventListener('activate', (event: ExtendableEvent) => event.waitUntil(self.clients.claim()));
+
 // Handle Periodic Background Sync (Android Chrome only)
 self.addEventListener('periodicsync', (event: any) => {
   if (event.tag === 'fetch-scores') {
