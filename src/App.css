@@ -1,5 +1,10 @@
 * { box-sizing: border-box; }
 
+:root {
+  --mantine-font-family: 'Space Grotesk Variable', 'Space Grotesk', system-ui, sans-serif !important;
+  --mantine-font-family-headings: 'Space Grotesk Variable', 'Space Grotesk', system-ui, sans-serif !important;
+}
+
 body {
   background: #080f1c;
   min-height: 100vh;
