@@ -7,6 +7,7 @@ const ALIASES: Record<string, string[]> = {
   'curacao': ['curacao', 'curaçao'],
   'dr congo': ['dr congo', 'congo dr', 'democratic republic of congo', 'democratic republic of the congo', 'congo', 'drc'],
   'united states': ['united states', 'usa', 'united states of america'],
+  'bosnia and herzegovina': ['bosnia and herzegovina', 'bosnia-herzegovina', 'bosnia & herzegovina'],
 };
 
 const norm = (s: string): string => (s || '').toLowerCase().trim();
