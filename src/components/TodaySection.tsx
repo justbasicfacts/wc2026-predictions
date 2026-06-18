@@ -26,6 +26,14 @@ function isRecent(dateStr: string): boolean {
   return diffDays > 0 && diffDays <= 3;
 }
 
+function isUpcoming(dateStr: string): boolean {
+  const now = new Date();
+  const { day, month } = parseMatchDate(dateStr);
+  const matchDate = new Date(now.getFullYear(), month, day);
+  const diffDays = (matchDate.getTime() - now.getTime()) / 86400000;
+  return diffDays > 0 && diffDays <= 3;
+}
+
 function sortByTime(a: Match, b: Match): number {
   return (a.time ?? '').localeCompare(b.time ?? '');
 }
@@ -33,7 +41,7 @@ function sortByTime(a: Match, b: Match): number {
 interface MatchRowProps {
   match: Match;
   scores: Record<string, ScoreRecord>;
-  highlight?: 'today' | 'recent';
+  highlight?: 'today' | 'recent' | 'upcoming';
 }
 
 function MatchRow({ match, scores, highlight = 'today' }: MatchRowProps) {
@@ -103,16 +111,30 @@ interface TodaySectionProps {
 
 export default function TodaySection({ matches, scores }: TodaySectionProps) {
   const [showRecent, setShowRecent] = useState(false);
+  const [showUpcoming, setShowUpcoming] = useState(false);
 
   const todayMatches = matches.filter(m => isToday(m.date)).sort(sortByTime);
   const recentMatches = matches.filter(m => isRecent(m.date)).sort((a, b) => {
-    // Most recent first
     const { day: ad, month: am } = parseMatchDate(a.date);
     const { day: bd, month: bm } = parseMatchDate(b.date);
     if (bm !== am) return bm - am;
     if (bd !== ad) return bd - ad;
     return (b.time ?? '').localeCompare(a.time ?? '');
   });
+  const upcomingMatches = matches.filter(m => isUpcoming(m.date)).sort((a, b) => {
+    const { day: ad, month: am } = parseMatchDate(a.date);
+    const { day: bd, month: bm } = parseMatchDate(b.date);
+    if (am !== bm) return am - bm;
+    if (ad !== bd) return ad - bd;
+    return (a.time ?? '').localeCompare(b.time ?? '');
+  });
+
+  // Group upcoming by date
+  const upcomingByDate = upcomingMatches.reduce<Record<string, Match[]>>((acc, m) => {
+    if (!acc[m.date]) acc[m.date] = [];
+    acc[m.date].push(m);
+    return acc;
+  }, {});
 
   return (
     <Box mb="md">
@@ -125,9 +147,9 @@ export default function TodaySection({ matches, scores }: TodaySectionProps) {
         {recentMatches.length > 0 && (
           <UnstyledButton
             onClick={() => setShowRecent(v => !v)}
-            style={{ fontSize: 10, color: 'var(--mantine-color-blue-4)', textDecoration: 'none', whiteSpace: 'nowrap' }}
+            style={{ fontSize: 10, color: 'var(--mantine-color-blue-4)', whiteSpace: 'nowrap' }}
           >
-            {showRecent ? '▲ Hide recent' : `▼ Recent results (${recentMatches.length})`}
+            {showRecent ? '▲ Hide recent' : `▼ Recent (${recentMatches.length})`}
           </UnstyledButton>
         )}
       </Text>
@@ -153,6 +175,43 @@ export default function TodaySection({ matches, scores }: TodaySectionProps) {
             <MatchRow key={`today-${i}`} match={match} scores={scores} highlight="today" />
           ))}
         </Stack>
+      )}
+
+      {upcomingMatches.length > 0 && (
+        <Box mt="sm">
+          <UnstyledButton
+            onClick={() => setShowUpcoming(v => !v)}
+            style={{ width: '100%' }}
+          >
+            <Text
+              fz={11} fw={700} tt="uppercase" c="dimmed"
+              style={{ display: 'flex', alignItems: 'center', gap: 8, letterSpacing: 2 }}
+            >
+              🗓 Upcoming
+              <Box style={{ flex: 1, height: 1, background: 'var(--mantine-color-dark-4)' }} />
+              <Text fz={10} c="blue.4" style={{ letterSpacing: 0 }}>
+                {showUpcoming ? '▲ Hide' : `▼ Show (${upcomingMatches.length})`}
+              </Text>
+            </Text>
+          </UnstyledButton>
+
+          {showUpcoming && (
+            <Stack gap="xs" mt="xs">
+              {Object.entries(upcomingByDate).map(([date, dayMatches]) => (
+                <Box key={date}>
+                  <Text fz={10} tt="uppercase" c="dimmed" mb={4} mt={6} style={{ letterSpacing: 1 }}>
+                    📅 {date}
+                  </Text>
+                  <Stack gap="xs">
+                    {dayMatches.map((match, i) => (
+                      <MatchRow key={`upcoming-${date}-${i}`} match={match} scores={scores} highlight="upcoming" />
+                    ))}
+                  </Stack>
+                </Box>
+              ))}
+            </Stack>
+          )}
+        </Box>
       )}
     </Box>
   );
