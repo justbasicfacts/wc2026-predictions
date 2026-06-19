@@ -5,7 +5,6 @@ const GAME_DATA: GameData = {
     "Anil",
     "Emre",
     "Enes",
-    "Zafer",
     "Cem"
   ],
   "ranking": [
@@ -55,11 +54,6 @@ const GAME_DATA: GameData = {
           "away": 1,
           "points": 1
         },
-        "Zafer": {
-          "home": null,
-          "away": null,
-          "points": 0
-        },
         "Cem": {
           "home": 2,
           "away": 0,
@@ -89,11 +83,6 @@ const GAME_DATA: GameData = {
         "Enes": {
           "home": 1,
           "away": 1,
-          "points": 0
-        },
-        "Zafer": {
-          "home": null,
-          "away": null,
           "points": 0
         },
         "Cem": {
@@ -127,11 +116,6 @@ const GAME_DATA: GameData = {
           "away": 1,
           "points": 0
         },
-        "Zafer": {
-          "home": null,
-          "away": null,
-          "points": 0
-        },
         "Cem": {
           "home": 2,
           "away": 1,
@@ -161,11 +145,6 @@ const GAME_DATA: GameData = {
         "Enes": {
           "home": 2,
           "away": 2,
-          "points": 0
-        },
-        "Zafer": {
-          "home": null,
-          "away": null,
           "points": 0
         },
         "Cem": {
@@ -199,11 +178,6 @@ const GAME_DATA: GameData = {
           "away": 1,
           "points": 0
         },
-        "Zafer": {
-          "home": null,
-          "away": null,
-          "points": 0
-        },
         "Cem": {
           "home": 1,
           "away": 2,
@@ -233,11 +207,6 @@ const GAME_DATA: GameData = {
         "Enes": {
           "home": 0,
           "away": 1,
-          "points": 0
-        },
-        "Zafer": {
-          "home": null,
-          "away": null,
           "points": 0
         },
         "Cem": {
@@ -271,11 +240,6 @@ const GAME_DATA: GameData = {
           "away": 1,
           "points": 0
         },
-        "Zafer": {
-          "home": null,
-          "away": null,
-          "points": 1
-        },
         "Cem": {
           "home": 1,
           "away": 1,
@@ -307,11 +271,6 @@ const GAME_DATA: GameData = {
           "away": 2,
           "points": 0
         },
-        "Zafer": {
-          "home": null,
-          "away": null,
-          "points": 1
-        },
         "Cem": {
           "home": 0,
           "away": 3,
@@ -341,11 +300,6 @@ const GAME_DATA: GameData = {
         "Enes": {
           "home": 1,
           "away": 2,
-          "points": 0
-        },
-        "Zafer": {
-          "home": null,
-          "away": null,
           "points": 0
         },
         "Cem": {
@@ -379,11 +333,6 @@ const GAME_DATA: GameData = {
           "away": 0,
           "points": 0
         },
-        "Zafer": {
-          "home": null,
-          "away": null,
-          "points": 0
-        },
         "Cem": {
           "home": 1,
           "away": 1,
@@ -413,11 +362,6 @@ const GAME_DATA: GameData = {
         "Enes": {
           "home": 1,
           "away": 1,
-          "points": 0
-        },
-        "Zafer": {
-          "home": null,
-          "away": null,
           "points": 0
         },
         "Cem": {
@@ -451,11 +395,6 @@ const GAME_DATA: GameData = {
           "away": 0,
           "points": 0
         },
-        "Zafer": {
-          "home": null,
-          "away": null,
-          "points": 0
-        },
         "Cem": {
           "home": 2,
           "away": 2,
@@ -486,11 +425,6 @@ const GAME_DATA: GameData = {
           "home": 2,
           "away": 0,
           "points": 0
-        },
-        "Zafer": {
-          "home": null,
-          "away": null,
-          "points": 1
         },
         "Cem": {
           "home": 2,
@@ -523,11 +457,6 @@ const GAME_DATA: GameData = {
           "away": 2,
           "points": 1
         },
-        "Zafer": {
-          "home": null,
-          "away": null,
-          "points": 0
-        },
         "Cem": {
           "home": 0,
           "away": 0,
@@ -557,11 +486,6 @@ const GAME_DATA: GameData = {
         "Enes": {
           "home": 2,
           "away": 1,
-          "points": 0
-        },
-        "Zafer": {
-          "home": null,
-          "away": null,
           "points": 0
         },
         "Cem": {
@@ -595,11 +519,6 @@ const GAME_DATA: GameData = {
           "away": 0,
           "points": 0
         },
-        "Zafer": {
-          "home": null,
-          "away": null,
-          "points": 0
-        },
         "Cem": {
           "home": 4,
           "away": 0,
@@ -629,11 +548,6 @@ const GAME_DATA: GameData = {
         "Enes": {
           "home": 0,
           "away": 3,
-          "points": 0
-        },
-        "Zafer": {
-          "home": null,
-          "away": null,
           "points": 0
         },
         "Cem": {
@@ -667,11 +581,6 @@ const GAME_DATA: GameData = {
           "away": 0,
           "points": 0
         },
-        "Zafer": {
-          "home": null,
-          "away": null,
-          "points": 0
-        },
         "Cem": {
           "home": 2,
           "away": 0,
@@ -701,11 +610,6 @@ const GAME_DATA: GameData = {
         "Enes": {
           "home": 1,
           "away": 1,
-          "points": 0
-        },
-        "Zafer": {
-          "home": null,
-          "away": null,
           "points": 0
         },
         "Cem": {
@@ -739,11 +643,6 @@ const GAME_DATA: GameData = {
           "away": 2,
           "points": 0
         },
-        "Zafer": {
-          "home": null,
-          "away": null,
-          "points": 0
-        },
         "Cem": {
           "home": 1,
           "away": 3,
@@ -773,11 +672,6 @@ const GAME_DATA: GameData = {
         "Enes": {
           "home": 1,
           "away": 0,
-          "points": 0
-        },
-        "Zafer": {
-          "home": null,
-          "away": null,
           "points": 0
         },
         "Cem": {
@@ -811,11 +705,6 @@ const GAME_DATA: GameData = {
           "away": 0,
           "points": 0
         },
-        "Zafer": {
-          "home": null,
-          "away": null,
-          "points": 0
-        },
         "Cem": {
           "home": 1,
           "away": 0,
@@ -845,11 +734,6 @@ const GAME_DATA: GameData = {
         "Enes": {
           "home": 2,
           "away": 1,
-          "points": 0
-        },
-        "Zafer": {
-          "home": null,
-          "away": null,
           "points": 0
         },
         "Cem": {
@@ -883,11 +767,6 @@ const GAME_DATA: GameData = {
           "away": 1,
           "points": 0
         },
-        "Zafer": {
-          "home": null,
-          "away": null,
-          "points": 0
-        },
         "Cem": {
           "home": 2,
           "away": 2,
@@ -900,7 +779,7 @@ const GAME_DATA: GameData = {
       "date": "14 Jun",
       "time": "19:00",
       "home": "Germany",
-      "away": "Cura\u00e7ao",
+      "away": "Curaçao",
       "home_score": 7,
       "away_score": 1,
       "guesses": {
@@ -918,11 +797,6 @@ const GAME_DATA: GameData = {
           "home": 5,
           "away": 0,
           "points": 1
-        },
-        "Zafer": {
-          "home": null,
-          "away": null,
-          "points": 0
         },
         "Cem": {
           "home": 6,
@@ -953,11 +827,6 @@ const GAME_DATA: GameData = {
         "Enes": {
           "home": 1,
           "away": 1,
-          "points": 0
-        },
-        "Zafer": {
-          "home": null,
-          "away": null,
           "points": 0
         },
         "Cem": {
@@ -991,11 +860,6 @@ const GAME_DATA: GameData = {
           "away": 1,
           "points": 0
         },
-        "Zafer": {
-          "home": null,
-          "away": null,
-          "points": 0
-        },
         "Cem": {
           "home": 3,
           "away": 1,
@@ -1008,7 +872,7 @@ const GAME_DATA: GameData = {
       "date": "21 Jun",
       "time": "02:00",
       "home": "Ecuador",
-      "away": "Cura\u00e7ao",
+      "away": "Curaçao",
       "home_score": null,
       "away_score": null,
       "guesses": {
@@ -1025,11 +889,6 @@ const GAME_DATA: GameData = {
         "Enes": {
           "home": 2,
           "away": 0,
-          "points": 0
-        },
-        "Zafer": {
-          "home": null,
-          "away": null,
           "points": 0
         },
         "Cem": {
@@ -1063,11 +922,6 @@ const GAME_DATA: GameData = {
           "away": 3,
           "points": 0
         },
-        "Zafer": {
-          "home": null,
-          "away": null,
-          "points": 0
-        },
         "Cem": {
           "home": 1,
           "away": 4,
@@ -1079,7 +933,7 @@ const GAME_DATA: GameData = {
       "section": "Group E",
       "date": "25 Jun",
       "time": "22:00",
-      "home": "Cura\u00e7ao",
+      "home": "Curaçao",
       "away": "Ivory Coast",
       "home_score": null,
       "away_score": null,
@@ -1097,11 +951,6 @@ const GAME_DATA: GameData = {
         "Enes": {
           "home": 0,
           "away": 2,
-          "points": 0
-        },
-        "Zafer": {
-          "home": null,
-          "away": null,
           "points": 0
         },
         "Cem": {
@@ -1135,11 +984,6 @@ const GAME_DATA: GameData = {
           "away": 1,
           "points": 1
         },
-        "Zafer": {
-          "home": null,
-          "away": null,
-          "points": 1
-        },
         "Cem": {
           "home": 2,
           "away": 3,
@@ -1171,11 +1015,6 @@ const GAME_DATA: GameData = {
           "away": 0,
           "points": 1
         },
-        "Zafer": {
-          "home": null,
-          "away": null,
-          "points": 0
-        },
         "Cem": {
           "home": 0,
           "away": 0,
@@ -1205,11 +1044,6 @@ const GAME_DATA: GameData = {
         "Enes": {
           "home": 2,
           "away": 1,
-          "points": 0
-        },
-        "Zafer": {
-          "home": null,
-          "away": null,
           "points": 0
         },
         "Cem": {
@@ -1243,11 +1077,6 @@ const GAME_DATA: GameData = {
           "away": 2,
           "points": 0
         },
-        "Zafer": {
-          "home": null,
-          "away": null,
-          "points": 0
-        },
         "Cem": {
           "home": 1,
           "away": 2,
@@ -1277,11 +1106,6 @@ const GAME_DATA: GameData = {
         "Enes": {
           "home": 0,
           "away": 1,
-          "points": 0
-        },
-        "Zafer": {
-          "home": null,
-          "away": null,
           "points": 0
         },
         "Cem": {
@@ -1315,11 +1139,6 @@ const GAME_DATA: GameData = {
           "away": 0,
           "points": 0
         },
-        "Zafer": {
-          "home": null,
-          "away": null,
-          "points": 0
-        },
         "Cem": {
           "home": 0,
           "away": 1,
@@ -1350,11 +1169,6 @@ const GAME_DATA: GameData = {
           "home": 1,
           "away": 0,
           "points": 0
-        },
-        "Zafer": {
-          "home": null,
-          "away": null,
-          "points": 1
         },
         "Cem": {
           "home": 0,
@@ -1387,11 +1201,6 @@ const GAME_DATA: GameData = {
           "away": 0,
           "points": 0
         },
-        "Zafer": {
-          "home": null,
-          "away": null,
-          "points": 1
-        },
         "Cem": {
           "home": 2,
           "away": 1,
@@ -1423,11 +1232,6 @@ const GAME_DATA: GameData = {
           "away": 1,
           "points": 0
         },
-        "Zafer": {
-          "home": null,
-          "away": null,
-          "points": 0
-        },
         "Cem": {
           "home": 1,
           "away": 1,
@@ -1457,11 +1261,6 @@ const GAME_DATA: GameData = {
         "Enes": {
           "home": 0,
           "away": 1,
-          "points": 0
-        },
-        "Zafer": {
-          "home": null,
-          "away": null,
           "points": 0
         },
         "Cem": {
@@ -1495,11 +1294,6 @@ const GAME_DATA: GameData = {
           "away": 2,
           "points": 0
         },
-        "Zafer": {
-          "home": null,
-          "away": null,
-          "points": 0
-        },
         "Cem": {
           "home": 1,
           "away": 3,
@@ -1529,11 +1323,6 @@ const GAME_DATA: GameData = {
         "Enes": {
           "home": 1,
           "away": 2,
-          "points": 0
-        },
-        "Zafer": {
-          "home": null,
-          "away": null,
           "points": 0
         },
         "Cem": {
@@ -1567,11 +1356,6 @@ const GAME_DATA: GameData = {
           "away": 0,
           "points": 0
         },
-        "Zafer": {
-          "home": null,
-          "away": null,
-          "points": 3
-        },
         "Cem": {
           "home": 7,
           "away": 0,
@@ -1603,11 +1387,6 @@ const GAME_DATA: GameData = {
           "away": 2,
           "points": 0
         },
-        "Zafer": {
-          "home": null,
-          "away": null,
-          "points": 1
-        },
         "Cem": {
           "home": 1,
           "away": 3,
@@ -1637,11 +1416,6 @@ const GAME_DATA: GameData = {
         "Enes": {
           "home": 7,
           "away": 0,
-          "points": 0
-        },
-        "Zafer": {
-          "home": null,
-          "away": null,
           "points": 0
         },
         "Cem": {
@@ -1675,11 +1449,6 @@ const GAME_DATA: GameData = {
           "away": 0,
           "points": 0
         },
-        "Zafer": {
-          "home": null,
-          "away": null,
-          "points": 0
-        },
         "Cem": {
           "home": 3,
           "away": 1,
@@ -1709,11 +1478,6 @@ const GAME_DATA: GameData = {
         "Enes": {
           "home": 0,
           "away": 2,
-          "points": 0
-        },
-        "Zafer": {
-          "home": null,
-          "away": null,
           "points": 0
         },
         "Cem": {
@@ -1747,11 +1511,6 @@ const GAME_DATA: GameData = {
           "away": 0,
           "points": 0
         },
-        "Zafer": {
-          "home": null,
-          "away": null,
-          "points": 0
-        },
         "Cem": {
           "home": 0,
           "away": 0,
@@ -1782,11 +1541,6 @@ const GAME_DATA: GameData = {
           "home": 2,
           "away": 1,
           "points": 1
-        },
-        "Zafer": {
-          "home": null,
-          "away": null,
-          "points": 0
         },
         "Cem": {
           "home": 3,
@@ -1819,11 +1573,6 @@ const GAME_DATA: GameData = {
           "away": 2,
           "points": 1
         },
-        "Zafer": {
-          "home": null,
-          "away": null,
-          "points": 0
-        },
         "Cem": {
           "home": 0,
           "away": 2,
@@ -1853,11 +1602,6 @@ const GAME_DATA: GameData = {
         "Enes": {
           "home": 3,
           "away": 0,
-          "points": 0
-        },
-        "Zafer": {
-          "home": null,
-          "away": null,
           "points": 0
         },
         "Cem": {
@@ -1891,11 +1635,6 @@ const GAME_DATA: GameData = {
           "away": 1,
           "points": 0
         },
-        "Zafer": {
-          "home": null,
-          "away": null,
-          "points": 0
-        },
         "Cem": {
           "home": 2,
           "away": 2,
@@ -1925,11 +1664,6 @@ const GAME_DATA: GameData = {
         "Enes": {
           "home": 0,
           "away": 3,
-          "points": 0
-        },
-        "Zafer": {
-          "home": null,
-          "away": null,
           "points": 0
         },
         "Cem": {
@@ -1963,11 +1697,6 @@ const GAME_DATA: GameData = {
           "away": 0,
           "points": 0
         },
-        "Zafer": {
-          "home": null,
-          "away": null,
-          "points": 0
-        },
         "Cem": {
           "home": 3,
           "away": 1,
@@ -1999,11 +1728,6 @@ const GAME_DATA: GameData = {
           "away": 0,
           "points": 1
         },
-        "Zafer": {
-          "home": null,
-          "away": null,
-          "points": 0
-        },
         "Cem": {
           "home": 3,
           "away": 0,
@@ -2033,11 +1757,6 @@ const GAME_DATA: GameData = {
         "Enes": {
           "home": 1,
           "away": 1,
-          "points": 0
-        },
-        "Zafer": {
-          "home": null,
-          "away": null,
           "points": 0
         },
         "Cem": {
@@ -2071,11 +1790,6 @@ const GAME_DATA: GameData = {
           "away": 1,
           "points": 0
         },
-        "Zafer": {
-          "home": null,
-          "away": null,
-          "points": 0
-        },
         "Cem": {
           "home": 2,
           "away": 0,
@@ -2105,11 +1819,6 @@ const GAME_DATA: GameData = {
         "Enes": {
           "home": 1,
           "away": 1,
-          "points": 0
-        },
-        "Zafer": {
-          "home": null,
-          "away": null,
           "points": 0
         },
         "Cem": {
@@ -2143,11 +1852,6 @@ const GAME_DATA: GameData = {
           "away": 2,
           "points": 0
         },
-        "Zafer": {
-          "home": null,
-          "away": null,
-          "points": 0
-        },
         "Cem": {
           "home": 0,
           "away": 5,
@@ -2177,11 +1881,6 @@ const GAME_DATA: GameData = {
         "Enes": {
           "home": 1,
           "away": 2,
-          "points": 0
-        },
-        "Zafer": {
-          "home": null,
-          "away": null,
           "points": 0
         },
         "Cem": {
@@ -2215,11 +1914,6 @@ const GAME_DATA: GameData = {
           "away": 0,
           "points": 0
         },
-        "Zafer": {
-          "home": null,
-          "away": null,
-          "points": 0
-        },
         "Cem": {
           "home": 2,
           "away": 1,
@@ -2249,11 +1943,6 @@ const GAME_DATA: GameData = {
         "Enes": {
           "home": 1,
           "away": 1,
-          "points": 0
-        },
-        "Zafer": {
-          "home": null,
-          "away": null,
           "points": 0
         },
         "Cem": {
@@ -2287,11 +1976,6 @@ const GAME_DATA: GameData = {
           "away": 0,
           "points": 0
         },
-        "Zafer": {
-          "home": null,
-          "away": null,
-          "points": 0
-        },
         "Cem": {
           "home": 3,
           "away": 0,
@@ -2321,11 +2005,6 @@ const GAME_DATA: GameData = {
         "Enes": {
           "home": 1,
           "away": 0,
-          "points": 0
-        },
-        "Zafer": {
-          "home": null,
-          "away": null,
           "points": 0
         },
         "Cem": {
@@ -2359,11 +2038,6 @@ const GAME_DATA: GameData = {
           "away": 3,
           "points": 0
         },
-        "Zafer": {
-          "home": null,
-          "away": null,
-          "points": 0
-        },
         "Cem": {
           "home": 1,
           "away": 1,
@@ -2393,11 +2067,6 @@ const GAME_DATA: GameData = {
         "Enes": {
           "home": 1,
           "away": 1,
-          "points": 0
-        },
-        "Zafer": {
-          "home": null,
-          "away": null,
           "points": 0
         },
         "Cem": {
@@ -2431,11 +2100,6 @@ const GAME_DATA: GameData = {
           "away": 0,
           "points": 0
         },
-        "Zafer": {
-          "home": null,
-          "away": null,
-          "points": 0
-        },
         "Cem": {
           "home": 2,
           "away": 1,
@@ -2465,11 +2129,6 @@ const GAME_DATA: GameData = {
         "Enes": {
           "home": 2,
           "away": 0,
-          "points": 0
-        },
-        "Zafer": {
-          "home": null,
-          "away": null,
           "points": 0
         },
         "Cem": {
@@ -2503,11 +2162,6 @@ const GAME_DATA: GameData = {
           "away": 0,
           "points": 0
         },
-        "Zafer": {
-          "home": null,
-          "away": null,
-          "points": 0
-        },
         "Cem": {
           "home": 0,
           "away": 0,
@@ -2537,11 +2191,6 @@ const GAME_DATA: GameData = {
         "Enes": {
           "home": 1,
           "away": 2,
-          "points": 0
-        },
-        "Zafer": {
-          "home": null,
-          "away": null,
           "points": 0
         },
         "Cem": {
@@ -2575,11 +2224,6 @@ const GAME_DATA: GameData = {
           "away": 2,
           "points": 0
         },
-        "Zafer": {
-          "home": null,
-          "away": null,
-          "points": 0
-        },
         "Cem": {
           "home": 0,
           "away": 5,
@@ -2611,11 +2255,6 @@ const GAME_DATA: GameData = {
           "away": 1,
           "points": 0
         },
-        "Zafer": {
-          "home": null,
-          "away": null,
-          "points": 0
-        },
         "Cem": {
           "home": 1,
           "away": 0,
@@ -2643,11 +2282,6 @@ const GAME_DATA: GameData = {
           "points": 0
         },
         "Enes": {
-          "home": null,
-          "away": null,
-          "points": 0
-        },
-        "Zafer": {
           "home": null,
           "away": null,
           "points": 0
@@ -2683,11 +2317,6 @@ const GAME_DATA: GameData = {
           "away": null,
           "points": 0
         },
-        "Zafer": {
-          "home": null,
-          "away": null,
-          "points": 0
-        },
         "Cem": {
           "home": null,
           "away": null,
@@ -2715,11 +2344,6 @@ const GAME_DATA: GameData = {
           "points": 0
         },
         "Enes": {
-          "home": null,
-          "away": null,
-          "points": 0
-        },
-        "Zafer": {
           "home": null,
           "away": null,
           "points": 0
@@ -2755,11 +2379,6 @@ const GAME_DATA: GameData = {
           "away": null,
           "points": 0
         },
-        "Zafer": {
-          "home": null,
-          "away": null,
-          "points": 0
-        },
         "Cem": {
           "home": null,
           "away": null,
@@ -2787,11 +2406,6 @@ const GAME_DATA: GameData = {
           "points": 0
         },
         "Enes": {
-          "home": null,
-          "away": null,
-          "points": 0
-        },
-        "Zafer": {
           "home": null,
           "away": null,
           "points": 0
@@ -2827,11 +2441,6 @@ const GAME_DATA: GameData = {
           "away": null,
           "points": 0
         },
-        "Zafer": {
-          "home": null,
-          "away": null,
-          "points": 0
-        },
         "Cem": {
           "home": null,
           "away": null,
@@ -2859,11 +2468,6 @@ const GAME_DATA: GameData = {
           "points": 0
         },
         "Enes": {
-          "home": null,
-          "away": null,
-          "points": 0
-        },
-        "Zafer": {
           "home": null,
           "away": null,
           "points": 0
@@ -2899,11 +2503,6 @@ const GAME_DATA: GameData = {
           "away": null,
           "points": 0
         },
-        "Zafer": {
-          "home": null,
-          "away": null,
-          "points": 0
-        },
         "Cem": {
           "home": null,
           "away": null,
@@ -2931,11 +2530,6 @@ const GAME_DATA: GameData = {
           "points": 0
         },
         "Enes": {
-          "home": null,
-          "away": null,
-          "points": 0
-        },
-        "Zafer": {
           "home": null,
           "away": null,
           "points": 0
@@ -2971,11 +2565,6 @@ const GAME_DATA: GameData = {
           "away": null,
           "points": 0
         },
-        "Zafer": {
-          "home": null,
-          "away": null,
-          "points": 0
-        },
         "Cem": {
           "home": null,
           "away": null,
@@ -3003,11 +2592,6 @@ const GAME_DATA: GameData = {
           "points": 0
         },
         "Enes": {
-          "home": null,
-          "away": null,
-          "points": 0
-        },
-        "Zafer": {
           "home": null,
           "away": null,
           "points": 0
@@ -3043,11 +2627,6 @@ const GAME_DATA: GameData = {
           "away": null,
           "points": 0
         },
-        "Zafer": {
-          "home": null,
-          "away": null,
-          "points": 0
-        },
         "Cem": {
           "home": null,
           "away": null,
@@ -3075,11 +2654,6 @@ const GAME_DATA: GameData = {
           "points": 0
         },
         "Enes": {
-          "home": null,
-          "away": null,
-          "points": 0
-        },
-        "Zafer": {
           "home": null,
           "away": null,
           "points": 0
@@ -3115,11 +2689,6 @@ const GAME_DATA: GameData = {
           "away": null,
           "points": 0
         },
-        "Zafer": {
-          "home": null,
-          "away": null,
-          "points": 0
-        },
         "Cem": {
           "home": null,
           "away": null,
@@ -3147,11 +2716,6 @@ const GAME_DATA: GameData = {
           "points": 0
         },
         "Enes": {
-          "home": null,
-          "away": null,
-          "points": 0
-        },
-        "Zafer": {
           "home": null,
           "away": null,
           "points": 0
@@ -3187,11 +2751,6 @@ const GAME_DATA: GameData = {
           "away": null,
           "points": 0
         },
-        "Zafer": {
-          "home": null,
-          "away": null,
-          "points": 0
-        },
         "Cem": {
           "home": null,
           "away": null,
@@ -3219,11 +2778,6 @@ const GAME_DATA: GameData = {
           "points": 0
         },
         "Enes": {
-          "home": null,
-          "away": null,
-          "points": 0
-        },
-        "Zafer": {
           "home": null,
           "away": null,
           "points": 0
@@ -3259,11 +2813,6 @@ const GAME_DATA: GameData = {
           "away": null,
           "points": 0
         },
-        "Zafer": {
-          "home": null,
-          "away": null,
-          "points": 0
-        },
         "Cem": {
           "home": null,
           "away": null,
@@ -3291,11 +2840,6 @@ const GAME_DATA: GameData = {
           "points": 0
         },
         "Enes": {
-          "home": null,
-          "away": null,
-          "points": 0
-        },
-        "Zafer": {
           "home": null,
           "away": null,
           "points": 0
@@ -3331,11 +2875,6 @@ const GAME_DATA: GameData = {
           "away": null,
           "points": 0
         },
-        "Zafer": {
-          "home": null,
-          "away": null,
-          "points": 0
-        },
         "Cem": {
           "home": null,
           "away": null,
@@ -3363,11 +2902,6 @@ const GAME_DATA: GameData = {
           "points": 0
         },
         "Enes": {
-          "home": null,
-          "away": null,
-          "points": 0
-        },
-        "Zafer": {
           "home": null,
           "away": null,
           "points": 0
@@ -3403,11 +2937,6 @@ const GAME_DATA: GameData = {
           "away": null,
           "points": 0
         },
-        "Zafer": {
-          "home": null,
-          "away": null,
-          "points": 0
-        },
         "Cem": {
           "home": null,
           "away": null,
@@ -3435,11 +2964,6 @@ const GAME_DATA: GameData = {
           "points": 0
         },
         "Enes": {
-          "home": null,
-          "away": null,
-          "points": 0
-        },
-        "Zafer": {
           "home": null,
           "away": null,
           "points": 0
@@ -3475,11 +2999,6 @@ const GAME_DATA: GameData = {
           "away": null,
           "points": 0
         },
-        "Zafer": {
-          "home": null,
-          "away": null,
-          "points": 0
-        },
         "Cem": {
           "home": null,
           "away": null,
@@ -3507,11 +3026,6 @@ const GAME_DATA: GameData = {
           "points": 0
         },
         "Enes": {
-          "home": null,
-          "away": null,
-          "points": 0
-        },
-        "Zafer": {
           "home": null,
           "away": null,
           "points": 0
@@ -3547,11 +3061,6 @@ const GAME_DATA: GameData = {
           "away": null,
           "points": 0
         },
-        "Zafer": {
-          "home": null,
-          "away": null,
-          "points": 0
-        },
         "Cem": {
           "home": null,
           "away": null,
@@ -3579,11 +3088,6 @@ const GAME_DATA: GameData = {
           "points": 0
         },
         "Enes": {
-          "home": null,
-          "away": null,
-          "points": 0
-        },
-        "Zafer": {
           "home": null,
           "away": null,
           "points": 0
@@ -3619,11 +3123,6 @@ const GAME_DATA: GameData = {
           "away": null,
           "points": 0
         },
-        "Zafer": {
-          "home": null,
-          "away": null,
-          "points": 0
-        },
         "Cem": {
           "home": null,
           "away": null,
@@ -3651,11 +3150,6 @@ const GAME_DATA: GameData = {
           "points": 0
         },
         "Enes": {
-          "home": null,
-          "away": null,
-          "points": 0
-        },
-        "Zafer": {
           "home": null,
           "away": null,
           "points": 0
@@ -3691,11 +3185,6 @@ const GAME_DATA: GameData = {
           "away": null,
           "points": 0
         },
-        "Zafer": {
-          "home": null,
-          "away": null,
-          "points": 0
-        },
         "Cem": {
           "home": null,
           "away": null,
@@ -3723,11 +3212,6 @@ const GAME_DATA: GameData = {
           "points": 0
         },
         "Enes": {
-          "home": null,
-          "away": null,
-          "points": 0
-        },
-        "Zafer": {
           "home": null,
           "away": null,
           "points": 0
@@ -3763,11 +3247,6 @@ const GAME_DATA: GameData = {
           "away": null,
           "points": 0
         },
-        "Zafer": {
-          "home": null,
-          "away": null,
-          "points": 0
-        },
         "Cem": {
           "home": null,
           "away": null,
@@ -3792,10 +3271,6 @@ const GAME_DATA: GameData = {
           "answer": "Spain",
           "points": 0
         },
-        "Zafer": {
-          "answer": null,
-          "points": 0
-        },
         "Cem": {
           "answer": "Spain",
           "points": 0
@@ -3815,10 +3290,6 @@ const GAME_DATA: GameData = {
         },
         "Enes": {
           "answer": "France",
-          "points": 0
-        },
-        "Zafer": {
-          "answer": null,
           "points": 0
         },
         "Cem": {
@@ -3842,10 +3313,6 @@ const GAME_DATA: GameData = {
           "answer": "Yamal",
           "points": 0
         },
-        "Zafer": {
-          "answer": null,
-          "points": 0
-        },
         "Cem": {
           "answer": "Olise",
           "points": 0
@@ -3865,10 +3332,6 @@ const GAME_DATA: GameData = {
         },
         "Enes": {
           "answer": "232",
-          "points": 0
-        },
-        "Zafer": {
-          "answer": null,
           "points": 0
         },
         "Cem": {
@@ -3892,10 +3355,6 @@ const GAME_DATA: GameData = {
           "answer": "10",
           "points": 0
         },
-        "Zafer": {
-          "answer": null,
-          "points": 0
-        },
         "Cem": {
           "answer": "11",
           "points": 0
@@ -3904,4 +3363,5 @@ const GAME_DATA: GameData = {
     }
   ]
 };
+
 export default GAME_DATA;
