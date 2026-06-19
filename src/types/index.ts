@@ -38,6 +38,12 @@ export interface GameData {
   expert_questions: ExpertQuestion[];
 }
 
+export interface MatchOdds {
+  homeML: string | null;
+  drawML: string | null;
+  awayML: string | null;
+}
+
 export interface ScoreRecord {
   matchKey: string;
   hs: number;

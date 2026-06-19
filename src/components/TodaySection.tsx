@@ -3,7 +3,7 @@ import { Card, Text, Badge, Box, Stack, UnstyledButton } from '@mantine/core';
 import { scoreKey } from '../utils/teamNames';
 import { flag } from '../utils/flags';
 import PredRow from './PredRow';
-import type { Match, ScoreRecord } from '../types';
+import type { Match, ScoreRecord, MatchOdds } from '../types';
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
@@ -41,12 +41,14 @@ function sortByTime(a: Match, b: Match): number {
 interface MatchRowProps {
   match: Match;
   scores: Record<string, ScoreRecord>;
+  odds: Record<string, MatchOdds>;
   highlight?: 'today' | 'recent' | 'upcoming';
 }
 
-function MatchRow({ match, scores, highlight = 'today' }: MatchRowProps) {
+function MatchRow({ match, scores, odds, highlight = 'today' }: MatchRowProps) {
   const key = scoreKey(match.home, match.away);
   const live = scores[key];
+  const matchOdds = odds[key];
   const hs = live?.hs ?? match.home_score;
   const as_ = live?.as_ ?? match.away_score;
   const status = live?.status ?? (match.home_score != null ? 'ft' : 'upcoming');
@@ -99,6 +101,14 @@ function MatchRow({ match, scores, highlight = 'today' }: MatchRowProps) {
       <Box px="md" pb={10} style={{ borderTop: '1px solid rgba(255,255,255,.06)', background: 'rgba(0,0,0,.25)' }}>
         <Text fz={10} tt="uppercase" c="dimmed" mb={6} style={{ letterSpacing: 1 }}>Predictions</Text>
         <PredRow match={match} hs={hs ?? null} as_={as_ ?? null} played={played} />
+        {matchOdds && (matchOdds.homeML || matchOdds.drawML || matchOdds.awayML) && (
+          <Box mt={6} style={{ display: 'flex', gap: 6, justifyContent: 'center' }}>
+            <Text fz={10} c="dimmed" style={{ opacity: 0.5, marginRight: 2 }}>ML</Text>
+            {matchOdds.homeML && <Text fz={10} fw={600} c="blue.3">{match.home.split(' ')[0]} {matchOdds.homeML}</Text>}
+            {matchOdds.drawML && <Text fz={10} fw={600} c="dimmed">D {matchOdds.drawML}</Text>}
+            {matchOdds.awayML && <Text fz={10} fw={600} c="blue.3">{match.away.split(' ')[0]} {matchOdds.awayML}</Text>}
+          </Box>
+        )}
       </Box>
     </Card>
   );
@@ -107,9 +117,10 @@ function MatchRow({ match, scores, highlight = 'today' }: MatchRowProps) {
 interface TodaySectionProps {
   matches: Match[];
   scores: Record<string, ScoreRecord>;
+  odds: Record<string, MatchOdds>;
 }
 
-export default function TodaySection({ matches, scores }: TodaySectionProps) {
+export default function TodaySection({ matches, scores, odds }: TodaySectionProps) {
   const [showRecent, setShowRecent] = useState(false);
   const [showUpcoming, setShowUpcoming] = useState(false);
 
@@ -159,7 +170,7 @@ export default function TodaySection({ matches, scores }: TodaySectionProps) {
           <Text fz={10} tt="uppercase" c="dimmed" mb={6} style={{ letterSpacing: 1 }}>🕐 Recent Results</Text>
           <Stack gap="xs">
             {recentMatches.map((match, i) => (
-              <MatchRow key={`recent-${i}`} match={match} scores={scores} highlight="recent" />
+              <MatchRow key={`recent-${i}`} match={match} scores={scores} odds={odds} highlight="recent" />
             ))}
           </Stack>
         </Box>
@@ -172,7 +183,7 @@ export default function TodaySection({ matches, scores }: TodaySectionProps) {
       ) : (
         <Stack gap="xs">
           {todayMatches.map((match, i) => (
-            <MatchRow key={`today-${i}`} match={match} scores={scores} highlight="today" />
+            <MatchRow key={`today-${i}`} match={match} scores={scores} odds={odds} highlight="today" />
           ))}
         </Stack>
       )}
@@ -204,7 +215,7 @@ export default function TodaySection({ matches, scores }: TodaySectionProps) {
                   </Text>
                   <Stack gap="xs">
                     {dayMatches.map((match, i) => (
-                      <MatchRow key={`upcoming-${date}-${i}`} match={match} scores={scores} highlight="upcoming" />
+                      <MatchRow key={`upcoming-${date}-${i}`} match={match} scores={scores} odds={odds} highlight="upcoming" />
                     ))}
                   </Stack>
                 </Box>

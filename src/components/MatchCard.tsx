@@ -1,5 +1,5 @@
 import { Badge, Box, Card, Text } from '@mantine/core';
-import type { Match, ScoreRecord } from '../types';
+import type { Match, ScoreRecord, MatchOdds } from '../types';
 
 import PredRow from './PredRow';
 import { scoreKey } from '../utils/teamNames';
@@ -8,6 +8,7 @@ import { flag } from '../utils/flags';
 interface MatchCardProps {
   match: Match;
   scores: Record<string, ScoreRecord>;
+  odds: Record<string, MatchOdds>;
 }
 
 function isTodayMatch(dateStr: string): boolean {
@@ -17,9 +18,10 @@ function isTodayMatch(dateStr: string): boolean {
   return parseInt(d) === now.getDate() && months[now.getMonth()] === m;
 }
 
-export default function MatchCard({ match, scores }: MatchCardProps) {
+export default function MatchCard({ match, scores, odds }: MatchCardProps) {
   const key = scoreKey(match.home, match.away);
   const live = scores[key];
+  const matchOdds = odds[key];
   const hs = live?.hs ?? match.home_score;
   const as_ = live?.as_ ?? match.away_score;
   const status = live?.status ?? (match.home_score != null ? 'ft' : 'upcoming');
@@ -71,6 +73,14 @@ export default function MatchCard({ match, scores }: MatchCardProps) {
       <Box px={8} pt={4} pb={6} style={{ borderTop: '1px solid rgba(255,255,255,.05)', background: 'rgba(0,0,0,.18)' }}>
         <Text fz={8} tt="uppercase" c="dimmed" mb={4} style={{ letterSpacing: 1 }}>Predictions</Text>
         <PredRow match={match} hs={hs ?? null} as_={as_ ?? null} played={played} />
+        {matchOdds && (matchOdds.homeML || matchOdds.drawML || matchOdds.awayML) && (
+          <Box mt={4} style={{ display: 'flex', gap: 6, justifyContent: 'center' }}>
+            <Text fz={9} c="dimmed" style={{ opacity: 0.5, marginRight: 2 }}>ML</Text>
+            {matchOdds.homeML && <Text fz={9} fw={600} c="blue.4">{match.home.split(' ')[0]} {matchOdds.homeML}</Text>}
+            {matchOdds.drawML && <Text fz={9} fw={600} c="dimmed">D {matchOdds.drawML}</Text>}
+            {matchOdds.awayML && <Text fz={9} fw={600} c="blue.4">{match.away.split(' ')[0]} {matchOdds.awayML}</Text>}
+          </Box>
+        )}
       </Box>
     </Card>
   );

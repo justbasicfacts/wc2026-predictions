@@ -3,18 +3,19 @@ import { scoreKey, teamsMatch } from '../utils/teamNames';
 import { playGoalSound } from '../utils/sound';
 import { showGoalNotification } from '../utils/notifications';
 import GAME_DATA from '../data/gameData';
-import type { ScoreRecord, ScoreInfo } from '../types';
+import type { ScoreRecord, ScoreInfo, MatchOdds } from '../types';
 
 const TOURNAMENT_START = new Date('2026-06-11');
 const REFRESH_IDLE_MS = 5 * 60 * 1000;
 const REFRESH_LIVE_MS = 60 * 1000;
 
-// Module-level store — survives re-renders, always readable directly
+// Module-level stores — survive re-renders, always readable directly
 const _scores: Record<string, ScoreRecord> = {};
+const _odds: Record<string, MatchOdds> = {};
 
 function getDates(full: boolean): string[] {
   if (!full) {
-    return [-1, 0, 1].map(o => {
+    return [-1, 0, 1, 2].map(o => {
       const d = new Date();
       d.setDate(d.getDate() + o);
       return d.toISOString().slice(0, 10).replace(/-/g, '');
@@ -22,7 +23,7 @@ function getDates(full: boolean): string[] {
   }
   const dates: string[] = [];
   const end = new Date();
-  end.setDate(end.getDate() + 1);
+  end.setDate(end.getDate() + 2);
   for (let d = new Date(TOURNAMENT_START); d <= end; d.setDate(d.getDate() + 1)) {
     dates.push(d.toISOString().slice(0, 10).replace(/-/g, ''));
   }
@@ -35,6 +36,7 @@ interface FetchedScore {
   as_: number;
   status: 'live' | 'ft';
   clock: string | null;
+  odds: MatchOdds | null;
 }
 
 async function fetchDate(dateStr: string): Promise<FetchedScore[]> {
@@ -63,27 +65,63 @@ async function fetchDate(dateStr: string): Promise<FetchedScore[]> {
     const state = statusType?.state || '';
     const isLive = state === 'in';
     const isFt = state === 'post';
-    if (!isLive && !isFt) continue;
+    const isPre = state === 'pre';
 
     const statusObj = comp.status as Record<string, unknown>;
     const clock = isLive ? (statusObj?.displayClock as string | null) ?? null : null;
 
+    // Extract moneyline odds (available for all states)
+    let odds: MatchOdds | null = null;
+    const oddsArr = comp.odds as Record<string, unknown>[] | undefined;
+    const oddsData = oddsArr?.[0] as Record<string, unknown> | undefined;
+    if (oddsData) {
+      const ml = oddsData.moneyline as Record<string, Record<string, Record<string, string>>> | undefined;
+      const homeCurrent = ml?.home?.current?.odds ?? ml?.home?.close?.odds ?? null;
+      const awayCurrent = ml?.away?.current?.odds ?? ml?.away?.close?.odds ?? null;
+      const drawData = oddsData.drawOdds as Record<string, unknown> | undefined;
+      const drawML = drawData?.moneyLine != null ? String(drawData.moneyLine) : null;
+      if (homeCurrent || drawML || awayCurrent) {
+        odds = {
+          homeML: homeCurrent ? formatML(String(homeCurrent)) : null,
+          drawML: drawML ? formatML(drawML) : null,
+          awayML: awayCurrent ? formatML(String(awayCurrent)) : null,
+        };
+      }
+    }
+
     for (const m of GAME_DATA.matches) {
       let hs: number, as_: number;
+      let flipped = false;
       if (teamsMatch(m.home, hName) && teamsMatch(m.away, aName)) {
         hs = hScore; as_ = aScore;
       } else if (teamsMatch(m.home, aName) && teamsMatch(m.away, hName)) {
         hs = aScore; as_ = hScore;
+        flipped = true;
       } else continue;
 
-      out.push({ key: scoreKey(m.home, m.away), hs, as_, status: isLive ? 'live' : 'ft', clock });
+      // Flip odds if teams are swapped
+      const matchOdds = odds && flipped
+        ? { homeML: odds.awayML, drawML: odds.drawML, awayML: odds.homeML }
+        : odds;
+
+      if (isLive || isFt) {
+        out.push({ key: scoreKey(m.home, m.away), hs, as_, status: isLive ? 'live' : 'ft', clock, odds: matchOdds });
+      } else if (isPre && matchOdds) {
+        // For upcoming matches, only push odds (no score)
+        out.push({ key: scoreKey(m.home, m.away), hs: 0, as_: 0, status: 'ft', clock: null, odds: matchOdds });
+      }
     }
   }
   return out;
 }
 
-export function useScores(): { scores: Record<string, ScoreRecord>; info: ScoreInfo; forceRefresh: () => void } {
-  // Counter — incrementing always triggers a re-render, no Map/object comparison issues
+function formatML(val: string): string {
+  const n = parseInt(val);
+  if (isNaN(n)) return val;
+  return n > 0 ? `+${n}` : String(n);
+}
+
+export function useScores(): { scores: Record<string, ScoreRecord>; odds: Record<string, MatchOdds>; info: ScoreInfo; forceRefresh: () => void } {
   const [tick, setTick] = useState(0);
   const [info, setInfo] = useState<ScoreInfo>({ loading: true, lastUpdated: null, count: 0, espnOk: null });
   const fullDone = useRef(false);
@@ -99,7 +137,9 @@ export function useScores(): { scores: Record<string, ScoreRecord>; info: ScoreI
         .filter((r): r is PromiseFulfilledResult<FetchedScore[]> => r.status === 'fulfilled')
         .flatMap(r => r.value);
 
-      const espnOk = results.length > 0;
+      // Only count live/ft for espnOk
+      const liveOrFt = results.filter(r => r.hs > 0 || r.as_ > 0 || _scores[r.key]);
+      const espnOk = liveOrFt.length > 0 || results.length > 0;
 
       // Goal detection
       if (fullDone.current) {
@@ -116,21 +156,24 @@ export function useScores(): { scores: Record<string, ScoreRecord>; info: ScoreI
         }
       }
 
-      // Write directly into module-level store
+      // Write scores and odds into module-level stores
       for (const r of results) {
-        const existing = _scores[r.key];
-        if (existing?.status === 'ft' && r.status === 'live') continue;
-        _scores[r.key] = { matchKey: r.key, hs: r.hs, as_: r.as_, status: r.status, clock: r.clock, savedAt: Date.now() };
-        if (r.status === 'live') prevLive.current[r.key] = { hs: r.hs, as_: r.as_ };
+        // Store odds for all matches
+        if (r.odds) _odds[r.key] = r.odds;
+
+        // Only store scores for live/ft matches with actual scores
+        if (r.status === 'live' || (r.status === 'ft' && (r.hs > 0 || r.as_ > 0 || _scores[r.key]))) {
+          const existing = _scores[r.key];
+          if (existing?.status === 'ft' && r.status === 'live') continue;
+          _scores[r.key] = { matchKey: r.key, hs: r.hs, as_: r.as_, status: r.status, clock: r.clock, savedAt: Date.now() };
+          if (r.status === 'live') prevLive.current[r.key] = { hs: r.hs, as_: r.as_ };
+        }
       }
 
       fullDone.current = true;
-
-      // Force re-render by incrementing counter
       setTick(t => t + 1);
       setInfo({ loading: false, lastUpdated: new Date(), count: results.length, espnOk });
 
-      // Adaptive polling
       const nowLive = results.some(r => r.status === 'live');
       if (nowLive !== hasLive.current) {
         hasLive.current = nowLive;
@@ -170,9 +213,7 @@ export function useScores(): { scores: Record<string, ScoreRecord>; info: ScoreI
     };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Suppress unused variable warning — tick drives re-renders
   void tick;
-
   const forceRefresh = () => void runFetch(false);
-  return { scores: _scores, info, forceRefresh };
+  return { scores: _scores, odds: _odds, info, forceRefresh };
 }
