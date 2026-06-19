@@ -1,11 +1,12 @@
 import { SimpleGrid, Card, Text, Stack, Box } from '@mantine/core';
 import type { Standing } from '../types';
 
-const MEDALS = ['🥇', '🥈', '🥉', '4️⃣', '5️⃣'];
+const MEDALS = ['🥇', '🥈', '🥉', '4️⃣', '5️⃣', '6️⃣'];
 const BORDER_COLORS = [
   'var(--mantine-color-yellow-5)',
   'var(--mantine-color-gray-5)',
   '#cd7c2e',
+  'var(--mantine-color-dark-4)',
   'var(--mantine-color-dark-4)',
   'var(--mantine-color-dark-4)',
 ];
@@ -24,7 +25,7 @@ export default function Leaderboard({ standings }: LeaderboardProps) {
         🏆 Standings
         <Box style={{ flex: 1, height: 1, background: 'var(--mantine-color-dark-4)' }} />
       </Text>
-      <SimpleGrid cols={{ base: 2, xs: 3, sm: 5 }} spacing="xs">
+      <SimpleGrid cols={{ base: 2, xs: standings.length }} spacing="xs">
         {standings.map((s, i) => (
           <Card
             key={s.name}
