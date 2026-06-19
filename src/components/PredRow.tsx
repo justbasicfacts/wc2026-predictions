@@ -20,7 +20,7 @@ interface PredRowProps {
 
 export default function PredRow({ match, hs, as_, played }: PredRowProps) {
   return (
-    <SimpleGrid cols={5} spacing={4}>
+    <SimpleGrid cols={GAME_DATA.players.length} spacing={4}>
       {GAME_DATA.players.map(p => {
         const g = match.guesses[p];
         const gh = g?.home ?? null;
