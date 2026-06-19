@@ -20,7 +20,7 @@ export default function ExpertSection({ questions }: ExpertSectionProps) {
         {questions.map((q, i) => (
           <Card key={i} p="md">
             <Text fw={600} fz="sm" mb="sm">{q.question}</Text>
-            <SimpleGrid cols={{ base: 2, xs: 3, sm: 5 }} spacing="xs">
+            <SimpleGrid cols={{ base: 2, xs: GAME_DATA.players.length }} spacing="xs">
               {GAME_DATA.players.map(p => {
                 const g = q.guesses[p];
                 const ans = g?.answer && g.answer !== 'None' ? g.answer : '—';
