@@ -37,6 +37,7 @@ interface FetchedScore {
   status: 'live' | 'ft';
   clock: string | null;
   odds: MatchOdds | null;
+  oddsOnly?: boolean;
 }
 
 async function fetchDate(dateStr: string): Promise<FetchedScore[]> {
@@ -108,7 +109,7 @@ async function fetchDate(dateStr: string): Promise<FetchedScore[]> {
         out.push({ key: scoreKey(m.home, m.away), hs, as_, status: isLive ? 'live' : 'ft', clock, odds: matchOdds });
       } else if (isPre && matchOdds) {
         // For upcoming matches, only push odds (no score)
-        out.push({ key: scoreKey(m.home, m.away), hs: 0, as_: 0, status: 'ft', clock: null, odds: matchOdds });
+        out.push({ key: scoreKey(m.home, m.away), hs: 0, as_: 0, status: 'ft', clock: null, odds: matchOdds, oddsOnly: true });
       }
     }
   }
@@ -161,8 +162,8 @@ export function useScores(): { scores: Record<string, ScoreRecord>; odds: Record
         // Store odds for all matches
         if (r.odds) _odds[r.key] = r.odds;
 
-        // Only store scores for live/ft matches with actual scores
-        if (r.status === 'live' || (r.status === 'ft' && (r.hs > 0 || r.as_ > 0 || _scores[r.key]))) {
+        // Only store scores for live/ft matches (not odds-only pre-game entries)
+        if (!r.oddsOnly && (r.status === 'live' || r.status === 'ft')) {
           const existing = _scores[r.key];
           if (existing?.status === 'ft' && r.status === 'live') continue;
           _scores[r.key] = { matchKey: r.key, hs: r.hs, as_: r.as_, status: r.status, clock: r.clock, savedAt: Date.now() };
