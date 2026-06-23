@@ -2,40 +2,13 @@ import { useState } from 'react';
 import { Card, Text, Badge, Box, Stack, UnstyledButton } from '@mantine/core';
 import { scoreKey } from '../utils/teamNames';
 import { flag } from '../utils/flags';
+import { isMatchToday, isMatchRecent, isMatchUpcoming, parseMatchUTC, formatLocalTime, formatLocalDate } from '../utils/matchTime';
 import PredRow from './PredRow';
 import type { Match, ScoreRecord, MatchOdds } from '../types';
 
-const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-
-function parseMatchDate(dateStr: string): { day: number; month: number } {
-  const [d, m] = dateStr.split(' ');
-  return { day: parseInt(d), month: MONTHS.indexOf(m) };
-}
-
-function isToday(dateStr: string): boolean {
-  const now = new Date();
-  const { day, month } = parseMatchDate(dateStr);
-  return day === now.getDate() && month === now.getMonth();
-}
-
-function isRecent(dateStr: string): boolean {
-  const now = new Date();
-  const { day, month } = parseMatchDate(dateStr);
-  const matchDate = new Date(now.getFullYear(), month, day);
-  const diffDays = (now.getTime() - matchDate.getTime()) / 86400000;
-  return diffDays > 0 && diffDays <= 3;
-}
-
-function isUpcoming(dateStr: string): boolean {
-  const now = new Date();
-  const { day, month } = parseMatchDate(dateStr);
-  const matchDate = new Date(now.getFullYear(), month, day);
-  const diffDays = (matchDate.getTime() - now.getTime()) / 86400000;
-  return diffDays > 0 && diffDays <= 3;
-}
-
-function sortByTime(a: Match, b: Match): number {
-  return (a.time ?? '').localeCompare(b.time ?? '');
+function sortByUTC(a: Match, b: Match): number {
+  return parseMatchUTC(a.date, a.time ?? '12:00').getTime() -
+         parseMatchUTC(b.date, b.time ?? '12:00').getTime();
 }
 
 interface MatchRowProps {
@@ -87,8 +60,8 @@ function MatchRow({ match, scores, odds, highlight = 'today' }: MatchRowProps) {
             </>
           ) : (
             <>
-              <Text fw={600} fz="sm" c="dimmed">{match.time}</Text>
-              <Text fz={10} c="dimmed">Upcoming</Text>
+              <Text fw={600} fz="sm" c="dimmed">{formatLocalTime(match.date, match.time ?? '')}</Text>
+              <Text fz={10} c="dimmed">Local time</Text>
             </>
           )}
         </Box>
@@ -124,26 +97,17 @@ export default function TodaySection({ matches, scores, odds }: TodaySectionProp
   const [showRecent, setShowRecent] = useState(false);
   const [showUpcoming, setShowUpcoming] = useState(false);
 
-  const todayMatches = matches.filter(m => isToday(m.date)).sort(sortByTime);
-  const recentMatches = matches.filter(m => isRecent(m.date)).sort((a, b) => {
-    const { day: ad, month: am } = parseMatchDate(a.date);
-    const { day: bd, month: bm } = parseMatchDate(b.date);
-    if (bm !== am) return bm - am;
-    if (bd !== ad) return bd - ad;
-    return (b.time ?? '').localeCompare(a.time ?? '');
-  });
-  const upcomingMatches = matches.filter(m => isUpcoming(m.date)).sort((a, b) => {
-    const { day: ad, month: am } = parseMatchDate(a.date);
-    const { day: bd, month: bm } = parseMatchDate(b.date);
-    if (am !== bm) return am - bm;
-    if (ad !== bd) return ad - bd;
-    return (a.time ?? '').localeCompare(b.time ?? '');
-  });
+  const todayMatches = matches.filter(m => isMatchToday(m.date, m.time ?? '')).sort(sortByUTC);
+  const recentMatches = matches.filter(m => isMatchRecent(m.date, m.time ?? '')).sort((a, b) =>
+    sortByUTC(b, a) // most recent first
+  );
+  const upcomingMatches = matches.filter(m => isMatchUpcoming(m.date, m.time ?? '')).sort(sortByUTC);
 
-  // Group upcoming by date
+  // Group upcoming by LOCAL date
   const upcomingByDate = upcomingMatches.reduce<Record<string, Match[]>>((acc, m) => {
-    if (!acc[m.date]) acc[m.date] = [];
-    acc[m.date].push(m);
+    const localDate = formatLocalDate(m.date, m.time ?? '');
+    if (!acc[localDate]) acc[localDate] = [];
+    acc[localDate].push(m);
     return acc;
   }, {});
 

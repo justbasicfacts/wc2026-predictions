@@ -4,18 +4,12 @@ import type { Match, ScoreRecord, MatchOdds } from '../types';
 import PredRow from './PredRow';
 import { scoreKey } from '../utils/teamNames';
 import { flag } from '../utils/flags';
+import { isMatchToday, formatLocalTime, formatLocalDate } from '../utils/matchTime';
 
 interface MatchCardProps {
   match: Match;
   scores: Record<string, ScoreRecord>;
   odds: Record<string, MatchOdds>;
-}
-
-function isTodayMatch(dateStr: string): boolean {
-  const now = new Date();
-  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  const [d, m] = dateStr.split(' ');
-  return parseInt(d) === now.getDate() && months[now.getMonth()] === m;
 }
 
 export default function MatchCard({ match, scores, odds }: MatchCardProps) {
@@ -27,7 +21,7 @@ export default function MatchCard({ match, scores, odds }: MatchCardProps) {
   const status = live?.status ?? (match.home_score != null ? 'ft' : 'upcoming');
   const isLive = status === 'live';
   const played = hs != null && as_ != null;
-  const isToday = isTodayMatch(match.date);
+  const isToday = isMatchToday(match.date, match.time ?? '');
 
   const borderColor = isLive
     ? 'var(--mantine-color-red-6)'
@@ -58,8 +52,8 @@ export default function MatchCard({ match, scores, odds }: MatchCardProps) {
             </>
           ) : (
             <>
-              <Text fw={600} fz="xs" c="dimmed">{match.time}</Text>
-              <Text fz={10} c="dimmed">{match.date}</Text>
+              <Text fw={600} fz="xs" c="dimmed">{formatLocalTime(match.date, match.time ?? '')}</Text>
+              <Text fz={10} c="dimmed">{formatLocalDate(match.date, match.time ?? '')}</Text>
             </>
           )}
         </Box>
