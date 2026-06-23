@@ -12,6 +12,7 @@ const REFRESH_LIVE_MS = 60 * 1000;
 // Module-level stores — survive re-renders, always readable directly
 const _scores: Record<string, ScoreRecord> = {};
 const _odds: Record<string, MatchOdds> = {};
+const _kickoffs: Record<string, string> = {}; // UTC ISO strings from ESPN
 
 function getDates(full: boolean): string[] {
   if (!full) {
@@ -38,6 +39,7 @@ interface FetchedScore {
   clock: string | null;
   odds: MatchOdds | null;
   oddsOnly?: boolean;
+  kickoffUtc?: string; // UTC ISO string from ESPN (e.g. "2026-06-23T17:00Z")
 }
 
 async function fetchDate(dateStr: string): Promise<FetchedScore[]> {
@@ -61,6 +63,8 @@ async function fetchDate(dateStr: string): Promise<FetchedScore[]> {
     const aName = aTeam?.displayName || aTeam?.name || '';
     const hScore = parseInt(hC.score as string) || 0;
     const aScore = parseInt(aC.score as string) || 0;
+
+    const kickoffUtc = ev.date as string | undefined;
 
     const statusType = (comp.status as Record<string, unknown>)?.type as Record<string, string>;
     const state = statusType?.state || '';
@@ -106,10 +110,10 @@ async function fetchDate(dateStr: string): Promise<FetchedScore[]> {
         : odds;
 
       if (isLive || isFt) {
-        out.push({ key: scoreKey(m.home, m.away), hs, as_, status: isLive ? 'live' : 'ft', clock, odds: matchOdds });
-      } else if (isPre && matchOdds) {
-        // For upcoming matches, only push odds (no score)
-        out.push({ key: scoreKey(m.home, m.away), hs: 0, as_: 0, status: 'ft', clock: null, odds: matchOdds, oddsOnly: true });
+        out.push({ key: scoreKey(m.home, m.away), hs, as_, status: isLive ? 'live' : 'ft', clock, odds: matchOdds, kickoffUtc });
+      } else if (isPre) {
+        // For upcoming matches: store kickoff time + odds (no score)
+        out.push({ key: scoreKey(m.home, m.away), hs: 0, as_: 0, status: 'ft', clock: null, odds: matchOdds, oddsOnly: true, kickoffUtc });
       }
     }
   }
@@ -122,7 +126,7 @@ function formatML(val: string): string {
   return n > 0 ? `+${n}` : String(n);
 }
 
-export function useScores(): { scores: Record<string, ScoreRecord>; odds: Record<string, MatchOdds>; info: ScoreInfo; forceRefresh: () => void } {
+export function useScores(): { scores: Record<string, ScoreRecord>; odds: Record<string, MatchOdds>; kickoffs: Record<string, string>; info: ScoreInfo; forceRefresh: () => void } {
   const [tick, setTick] = useState(0);
   const [info, setInfo] = useState<ScoreInfo>({ loading: true, lastUpdated: null, count: 0, espnOk: null });
   const fullDone = useRef(false);
@@ -157,8 +161,11 @@ export function useScores(): { scores: Record<string, ScoreRecord>; odds: Record
         }
       }
 
-      // Write scores and odds into module-level stores
+      // Write scores, odds, and kickoff times into module-level stores
       for (const r of results) {
+        // Store kickoff time for all matches (ESPN UTC time)
+        if (r.kickoffUtc) _kickoffs[r.key] = r.kickoffUtc;
+
         // Store odds for all matches
         if (r.odds) _odds[r.key] = r.odds;
 
@@ -216,5 +223,5 @@ export function useScores(): { scores: Record<string, ScoreRecord>; odds: Record
 
   void tick;
   const forceRefresh = () => void runFetch(false);
-  return { scores: _scores, odds: _odds, info, forceRefresh };
+  return { scores: _scores, odds: _odds, kickoffs: _kickoffs, info, forceRefresh };
 }

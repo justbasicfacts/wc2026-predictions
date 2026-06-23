@@ -4,15 +4,16 @@ import type { Match, ScoreRecord, MatchOdds } from '../types';
 import PredRow from './PredRow';
 import { scoreKey } from '../utils/teamNames';
 import { flag } from '../utils/flags';
-import { isMatchToday, formatLocalTime, formatLocalDate } from '../utils/matchTime';
+import { parseMatchUTC } from '../utils/matchTime';
 
 interface MatchCardProps {
   match: Match;
   scores: Record<string, ScoreRecord>;
   odds: Record<string, MatchOdds>;
+  kickoffs: Record<string, string>;
 }
 
-export default function MatchCard({ match, scores, odds }: MatchCardProps) {
+export default function MatchCard({ match, scores, odds, kickoffs }: MatchCardProps) {
   const key = scoreKey(match.home, match.away);
   const live = scores[key];
   const matchOdds = odds[key];
@@ -21,7 +22,15 @@ export default function MatchCard({ match, scores, odds }: MatchCardProps) {
   const status = live?.status ?? (match.home_score != null ? 'ft' : 'upcoming');
   const isLive = status === 'live';
   const played = hs != null && as_ != null;
-  const isToday = isMatchToday(match.date, match.time ?? '');
+
+  // Use ESPN UTC kickoff if available, else fall back to gameData (which may be local time)
+  const kickoffDate = kickoffs[key] ? new Date(kickoffs[key]) : parseMatchUTC(match.date, match.time ?? '12:00');
+  const now = new Date();
+  const isToday = kickoffDate.getFullYear() === now.getFullYear() &&
+                  kickoffDate.getMonth() === now.getMonth() &&
+                  kickoffDate.getDate() === now.getDate();
+  const kickoffLocalTime = kickoffDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  const kickoffLocalDate = kickoffDate.toLocaleDateString([], { day: 'numeric', month: 'short' });
 
   const borderColor = isLive
     ? 'var(--mantine-color-red-6)'
@@ -52,8 +61,8 @@ export default function MatchCard({ match, scores, odds }: MatchCardProps) {
             </>
           ) : (
             <>
-              <Text fw={600} fz="xs" c="dimmed">{formatLocalTime(match.date, match.time ?? '')}</Text>
-              <Text fz={10} c="dimmed">{formatLocalDate(match.date, match.time ?? '')}</Text>
+              <Text fw={600} fz="xs" c="dimmed">{kickoffLocalTime}</Text>
+              <Text fz={10} c="dimmed">{kickoffLocalDate}</Text>
             </>
           )}
         </Box>

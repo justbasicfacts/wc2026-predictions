@@ -49,7 +49,7 @@ const LEGEND = [
 ];
 
 export default function App() {
-  const { scores, odds, info, forceRefresh } = useScores();
+  const { scores, odds, kickoffs, info, forceRefresh } = useScores();
   const [section, setSection] = useState('all');
   // info.lastUpdated changes every fetch; scores is a stable object ref so alone won't trigger useMemo
   const standings = useMemo(() => calcStandings(scores), [scores, info.lastUpdated]);
@@ -59,7 +59,7 @@ export default function App() {
       <InstallBanner />
       <Header info={info} onRefresh={forceRefresh} />
       <Box p="sm" pb={60}>
-        <TodaySection matches={GAME_DATA.matches} scores={scores} odds={odds} />
+        <TodaySection matches={GAME_DATA.matches} scores={scores} odds={odds} kickoffs={kickoffs} />
         <Leaderboard standings={standings} />
 
         <Text fz={11} fw={700} tt="uppercase" c="dimmed" mt="md" mb="xs"
@@ -86,7 +86,7 @@ export default function App() {
         </Group>
 
         <SectionTabs sections={ALL_SECTIONS} active={section} onChange={setSection} />
-        <MatchList matches={GAME_DATA.matches} scores={scores} odds={odds} section={section} />
+        <MatchList matches={GAME_DATA.matches} scores={scores} odds={odds} kickoffs={kickoffs} section={section} />
         <ExpertSection questions={GAME_DATA.expert_questions} />
       </Box>
     </Box>

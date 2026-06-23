@@ -2,23 +2,36 @@ import { useState } from 'react';
 import { Card, Text, Badge, Box, Stack, UnstyledButton } from '@mantine/core';
 import { scoreKey } from '../utils/teamNames';
 import { flag } from '../utils/flags';
-import { isMatchToday, isMatchRecent, isMatchUpcoming, parseMatchUTC, formatLocalTime, formatLocalDate } from '../utils/matchTime';
+import { parseMatchUTC } from '../utils/matchTime';
 import PredRow from './PredRow';
 import type { Match, ScoreRecord, MatchOdds } from '../types';
 
-function sortByUTC(a: Match, b: Match): number {
-  return parseMatchUTC(a.date, a.time ?? '12:00').getTime() -
-         parseMatchUTC(b.date, b.time ?? '12:00').getTime();
+function kickoffDate(kickoffs: Record<string, string>, m: Match): Date {
+  const utc = kickoffs[scoreKey(m.home, m.away)];
+  return utc ? new Date(utc) : parseMatchUTC(m.date, m.time ?? '12:00');
+}
+
+function localTime(kickoffs: Record<string, string>, m: Match): string {
+  return kickoffDate(kickoffs, m).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+}
+
+function localDateLabel(kickoffs: Record<string, string>, m: Match): string {
+  return kickoffDate(kickoffs, m).toLocaleDateString([], { day: 'numeric', month: 'short' });
+}
+
+function startOfDay(d: Date): number {
+  return new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
 }
 
 interface MatchRowProps {
   match: Match;
   scores: Record<string, ScoreRecord>;
   odds: Record<string, MatchOdds>;
+  kickoffs: Record<string, string>;
   highlight?: 'today' | 'recent' | 'upcoming';
 }
 
-function MatchRow({ match, scores, odds, highlight = 'today' }: MatchRowProps) {
+function MatchRow({ match, scores, odds, kickoffs, highlight = 'today' }: MatchRowProps) {
   const key = scoreKey(match.home, match.away);
   const live = scores[key];
   const matchOdds = odds[key];
@@ -60,7 +73,7 @@ function MatchRow({ match, scores, odds, highlight = 'today' }: MatchRowProps) {
             </>
           ) : (
             <>
-              <Text fw={600} fz="sm" c="dimmed">{formatLocalTime(match.date, match.time ?? '')}</Text>
+              <Text fw={600} fz="sm" c="dimmed">{localTime(kickoffs, match)}</Text>
               <Text fz={10} c="dimmed">Local time</Text>
             </>
           )}
@@ -91,23 +104,39 @@ interface TodaySectionProps {
   matches: Match[];
   scores: Record<string, ScoreRecord>;
   odds: Record<string, MatchOdds>;
+  kickoffs: Record<string, string>;
 }
 
-export default function TodaySection({ matches, scores, odds }: TodaySectionProps) {
+export default function TodaySection({ matches, scores, odds, kickoffs }: TodaySectionProps) {
   const [showRecent, setShowRecent] = useState(false);
   const [showUpcoming, setShowUpcoming] = useState(false);
 
-  const todayMatches = matches.filter(m => isMatchToday(m.date, m.time ?? '')).sort(sortByUTC);
-  const recentMatches = matches.filter(m => isMatchRecent(m.date, m.time ?? '')).sort((a, b) =>
-    sortByUTC(b, a) // most recent first
-  );
-  const upcomingMatches = matches.filter(m => isMatchUpcoming(m.date, m.time ?? '')).sort(sortByUTC);
+  const todayStart = startOfDay(new Date());
+  const byKickoff = (m: Match) => kickoffDate(kickoffs, m);
+
+  const todayMatches = matches
+    .filter(m => startOfDay(byKickoff(m)) === todayStart)
+    .sort((a, b) => byKickoff(a).getTime() - byKickoff(b).getTime());
+
+  const recentMatches = matches
+    .filter(m => {
+      const diff = (todayStart - startOfDay(byKickoff(m))) / 86400000;
+      return diff > 0 && diff <= 3;
+    })
+    .sort((a, b) => byKickoff(b).getTime() - byKickoff(a).getTime()); // most recent first
+
+  const upcomingMatches = matches
+    .filter(m => {
+      const diff = (startOfDay(byKickoff(m)) - todayStart) / 86400000;
+      return diff > 0 && diff <= 3;
+    })
+    .sort((a, b) => byKickoff(a).getTime() - byKickoff(b).getTime());
 
   // Group upcoming by LOCAL date
   const upcomingByDate = upcomingMatches.reduce<Record<string, Match[]>>((acc, m) => {
-    const localDate = formatLocalDate(m.date, m.time ?? '');
-    if (!acc[localDate]) acc[localDate] = [];
-    acc[localDate].push(m);
+    const label = localDateLabel(kickoffs, m);
+    if (!acc[label]) acc[label] = [];
+    acc[label].push(m);
     return acc;
   }, {});
 
@@ -134,7 +163,7 @@ export default function TodaySection({ matches, scores, odds }: TodaySectionProp
           <Text fz={10} tt="uppercase" c="dimmed" mb={6} style={{ letterSpacing: 1 }}>🕐 Recent Results</Text>
           <Stack gap="xs">
             {recentMatches.map((match, i) => (
-              <MatchRow key={`recent-${i}`} match={match} scores={scores} odds={odds} highlight="recent" />
+              <MatchRow key={`recent-${i}`} match={match} scores={scores} odds={odds} kickoffs={kickoffs} highlight="recent" />
             ))}
           </Stack>
         </Box>
@@ -147,7 +176,7 @@ export default function TodaySection({ matches, scores, odds }: TodaySectionProp
       ) : (
         <Stack gap="xs">
           {todayMatches.map((match, i) => (
-            <MatchRow key={`today-${i}`} match={match} scores={scores} odds={odds} highlight="today" />
+            <MatchRow key={`today-${i}`} match={match} scores={scores} odds={odds} kickoffs={kickoffs} highlight="today" />
           ))}
         </Stack>
       )}
@@ -179,7 +208,7 @@ export default function TodaySection({ matches, scores, odds }: TodaySectionProp
                   </Text>
                   <Stack gap="xs">
                     {dayMatches.map((match, i) => (
-                      <MatchRow key={`upcoming-${date}-${i}`} match={match} scores={scores} odds={odds} highlight="upcoming" />
+                      <MatchRow key={`upcoming-${date}-${i}`} match={match} scores={scores} odds={odds} kickoffs={kickoffs} highlight="upcoming" />
                     ))}
                   </Stack>
                 </Box>
