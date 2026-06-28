@@ -2266,29 +2266,29 @@ const GAME_DATA: GameData = {
       "section": "Round of 32",
       "date": "28 Jun",
       "time": "21:00",
-      "home": "Runner-up A",
-      "away": "Runner-up B",
+      "home": "South Africa",
+      "away": "Canada",
       "home_score": null,
       "away_score": null,
       "guesses": {
         "Anil": {
-          "home": null,
-          "away": null,
+          "home": 3,
+          "away": 1,
           "points": 0
         },
         "Emre": {
-          "home": null,
-          "away": null,
+          "home": 0,
+          "away": 1,
           "points": 0
         },
         "Enes": {
-          "home": null,
-          "away": null,
+          "home": 1,
+          "away": 2,
           "points": 0
         },
         "Cem": {
-          "home": null,
-          "away": null,
+          "home": 1,
+          "away": 1,
           "points": 0
         }
       }
@@ -2297,29 +2297,29 @@ const GAME_DATA: GameData = {
       "section": "Round of 32",
       "date": "29 Jun",
       "time": "19:00",
-      "home": "Winner E",
-      "away": "3rd from A/B/C/D/F",
+      "home": "Germany",
+      "away": "Paraguay",
       "home_score": null,
       "away_score": null,
       "guesses": {
         "Anil": {
-          "home": null,
-          "away": null,
+          "home": 3,
+          "away": 1,
           "points": 0
         },
         "Emre": {
-          "home": null,
-          "away": null,
+          "home": 2,
+          "away": 0,
           "points": 0
         },
         "Enes": {
-          "home": null,
-          "away": null,
+          "home": 3,
+          "away": 0,
           "points": 0
         },
         "Cem": {
-          "home": null,
-          "away": null,
+          "home": 4,
+          "away": 0,
           "points": 0
         }
       }
@@ -2328,29 +2328,29 @@ const GAME_DATA: GameData = {
       "section": "Round of 32",
       "date": "29 Jun",
       "time": "22:30",
-      "home": "Winner F",
-      "away": "Runner-up C",
+      "home": "Netherlands",
+      "away": "Morocco",
       "home_score": null,
       "away_score": null,
       "guesses": {
         "Anil": {
-          "home": null,
-          "away": null,
+          "home": 4,
+          "away": 1,
           "points": 0
         },
         "Emre": {
-          "home": null,
-          "away": null,
+          "home": 2,
+          "away": 2,
           "points": 0
         },
         "Enes": {
-          "home": null,
-          "away": null,
+          "home": 2,
+          "away": 1,
           "points": 0
         },
         "Cem": {
-          "home": null,
-          "away": null,
+          "home": 3,
+          "away": 2,
           "points": 0
         }
       }
@@ -2359,29 +2359,29 @@ const GAME_DATA: GameData = {
       "section": "Round of 32",
       "date": "30 Jun",
       "time": "03:00",
-      "home": "Winner C",
-      "away": "Runner-up F",
+      "home": "Brazil",
+      "away": "Japan",
       "home_score": null,
       "away_score": null,
       "guesses": {
         "Anil": {
-          "home": null,
-          "away": null,
+          "home": 2,
+          "away": 0,
           "points": 0
         },
         "Emre": {
-          "home": null,
-          "away": null,
+          "home": 2,
+          "away": 1,
           "points": 0
         },
         "Enes": {
-          "home": null,
-          "away": null,
+          "home": 1,
+          "away": 1,
           "points": 0
         },
         "Cem": {
-          "home": null,
-          "away": null,
+          "home": 3,
+          "away": 1,
           "points": 0
         }
       }
@@ -2390,29 +2390,29 @@ const GAME_DATA: GameData = {
       "section": "Round of 32",
       "date": "30 Jun",
       "time": "19:00",
-      "home": "Winner I",
-      "away": "3rd from C/D/F/G/H",
+      "home": "France",
+      "away": "Sweden",
       "home_score": null,
       "away_score": null,
       "guesses": {
         "Anil": {
-          "home": null,
-          "away": null,
+          "home": 4,
+          "away": 1,
           "points": 0
         },
         "Emre": {
-          "home": null,
-          "away": null,
+          "home": 3,
+          "away": 1,
           "points": 0
         },
         "Enes": {
-          "home": null,
-          "away": null,
+          "home": 2,
+          "away": 0,
           "points": 0
         },
         "Cem": {
-          "home": null,
-          "away": null,
+          "home": 2,
+          "away": 0,
           "points": 0
         }
       }
@@ -2421,29 +2421,29 @@ const GAME_DATA: GameData = {
       "section": "Round of 32",
       "date": "30 Jun",
       "time": "23:00",
-      "home": "Runner-up E",
-      "away": "Runner-up I",
+      "home": "Ivory Coast",
+      "away": "Norway",
       "home_score": null,
       "away_score": null,
       "guesses": {
         "Anil": {
-          "home": null,
-          "away": null,
+          "home": 0,
+          "away": 4,
           "points": 0
         },
         "Emre": {
-          "home": null,
-          "away": null,
+          "home": 1,
+          "away": 2,
           "points": 0
         },
         "Enes": {
-          "home": null,
-          "away": null,
+          "home": 1,
+          "away": 2,
           "points": 0
         },
         "Cem": {
-          "home": null,
-          "away": null,
+          "home": 2,
+          "away": 2,
           "points": 0
         }
       }
@@ -2452,29 +2452,29 @@ const GAME_DATA: GameData = {
       "section": "Round of 32",
       "date": "01 Jul",
       "time": "03:00",
-      "home": "Winner A",
-      "away": "3rd from C/E/F/H/I",
+      "home": "Mexico",
+      "away": "Ecuador",
       "home_score": null,
       "away_score": null,
       "guesses": {
         "Anil": {
-          "home": null,
-          "away": null,
+          "home": 2,
+          "away": 2,
           "points": 0
         },
         "Emre": {
-          "home": null,
-          "away": null,
+          "home": 2,
+          "away": 1,
           "points": 0
         },
         "Enes": {
-          "home": null,
-          "away": null,
+          "home": 2,
+          "away": 1,
           "points": 0
         },
         "Cem": {
-          "home": null,
-          "away": null,
+          "home": 2,
+          "away": 0,
           "points": 0
         }
       }
@@ -2483,29 +2483,29 @@ const GAME_DATA: GameData = {
       "section": "Round of 32",
       "date": "01 Jul",
       "time": "18:00",
-      "home": "Winner L",
-      "away": "3rd from E/H/I/J/K",
+      "home": "England",
+      "away": "DR Congo",
       "home_score": null,
       "away_score": null,
       "guesses": {
         "Anil": {
-          "home": null,
-          "away": null,
+          "home": 3,
+          "away": 0,
           "points": 0
         },
         "Emre": {
-          "home": null,
-          "away": null,
+          "home": 2,
+          "away": 0,
           "points": 0
         },
         "Enes": {
-          "home": null,
-          "away": null,
+          "home": 2,
+          "away": 1,
           "points": 0
         },
         "Cem": {
-          "home": null,
-          "away": null,
+          "home": 3,
+          "away": 1,
           "points": 0
         }
       }
@@ -2514,29 +2514,29 @@ const GAME_DATA: GameData = {
       "section": "Round of 32",
       "date": "01 Jul",
       "time": "22:00",
-      "home": "Winner D",
-      "away": "3rd from B/E/F/I/J",
+      "home": "United States",
+      "away": "Bosnia and Herzegovina",
       "home_score": null,
       "away_score": null,
       "guesses": {
         "Anil": {
-          "home": null,
-          "away": null,
+          "home": 1,
+          "away": 2,
           "points": 0
         },
         "Emre": {
-          "home": null,
-          "away": null,
+          "home": 3,
+          "away": 1,
           "points": 0
         },
         "Enes": {
-          "home": null,
-          "away": null,
+          "home": 2,
+          "away": 1,
           "points": 0
         },
         "Cem": {
-          "home": null,
-          "away": null,
+          "home": 1,
+          "away": 1,
           "points": 0
         }
       }
@@ -2545,29 +2545,29 @@ const GAME_DATA: GameData = {
       "section": "Round of 32",
       "date": "02 Jul",
       "time": "02:00",
-      "home": "Winner G",
-      "away": "3rd from A/E/H/I/J",
+      "home": "Belgium",
+      "away": "Senegal",
       "home_score": null,
       "away_score": null,
       "guesses": {
         "Anil": {
-          "home": null,
-          "away": null,
+          "home": 1,
+          "away": 0,
           "points": 0
         },
         "Emre": {
-          "home": null,
-          "away": null,
+          "home": 0,
+          "away": 1,
           "points": 0
         },
         "Enes": {
-          "home": null,
-          "away": null,
+          "home": 2,
+          "away": 1,
           "points": 0
         },
         "Cem": {
-          "home": null,
-          "away": null,
+          "home": 0,
+          "away": 1,
           "points": 0
         }
       }
@@ -2576,29 +2576,29 @@ const GAME_DATA: GameData = {
       "section": "Round of 32",
       "date": "02 Jul",
       "time": "21:00",
-      "home": "Runner-up K",
-      "away": "Runner-up L",
+      "home": "Portugal",
+      "away": "Croatia",
       "home_score": null,
       "away_score": null,
       "guesses": {
         "Anil": {
-          "home": null,
-          "away": null,
+          "home": 1,
+          "away": 3,
           "points": 0
         },
         "Emre": {
-          "home": null,
-          "away": null,
+          "home": 1,
+          "away": 2,
           "points": 0
         },
         "Enes": {
-          "home": null,
-          "away": null,
+          "home": 1,
+          "away": 2,
           "points": 0
         },
         "Cem": {
-          "home": null,
-          "away": null,
+          "home": 1,
+          "away": 0,
           "points": 0
         }
       }
@@ -2607,29 +2607,29 @@ const GAME_DATA: GameData = {
       "section": "Round of 32",
       "date": "03 Jul",
       "time": "01:00",
-      "home": "Winner H",
-      "away": "Runner-up J",
+      "home": "Spain",
+      "away": "Austria",
       "home_score": null,
       "away_score": null,
       "guesses": {
         "Anil": {
-          "home": null,
-          "away": null,
+          "home": 3,
+          "away": 1,
           "points": 0
         },
         "Emre": {
-          "home": null,
-          "away": null,
+          "home": 3,
+          "away": 1,
           "points": 0
         },
         "Enes": {
-          "home": null,
-          "away": null,
+          "home": 2,
+          "away": 0,
           "points": 0
         },
         "Cem": {
-          "home": null,
-          "away": null,
+          "home": 3,
+          "away": 0,
           "points": 0
         }
       }
@@ -2638,29 +2638,29 @@ const GAME_DATA: GameData = {
       "section": "Round of 32",
       "date": "03 Jul",
       "time": "05:00",
-      "home": "Winner B",
-      "away": "3rd from E/F/G/I/J",
+      "home": "Switzerland",
+      "away": "Algeria",
       "home_score": null,
       "away_score": null,
       "guesses": {
         "Anil": {
-          "home": null,
-          "away": null,
+          "home": 2,
+          "away": 1,
           "points": 0
         },
         "Emre": {
-          "home": null,
-          "away": null,
+          "home": 2,
+          "away": 0,
           "points": 0
         },
         "Enes": {
-          "home": null,
-          "away": null,
+          "home": 3,
+          "away": 0,
           "points": 0
         },
         "Cem": {
-          "home": null,
-          "away": null,
+          "home": 2,
+          "away": 1,
           "points": 0
         }
       }
@@ -2669,29 +2669,29 @@ const GAME_DATA: GameData = {
       "section": "Round of 32",
       "date": "03 Jul",
       "time": "20:00",
-      "home": "Winner J",
-      "away": "Runner-up H",
+      "home": "Argentina",
+      "away": "Cape Verde",
       "home_score": null,
       "away_score": null,
       "guesses": {
         "Anil": {
-          "home": null,
-          "away": null,
+          "home": 5,
+          "away": 0,
           "points": 0
         },
         "Emre": {
-          "home": null,
-          "away": null,
+          "home": 3,
+          "away": 0,
           "points": 0
         },
         "Enes": {
-          "home": null,
-          "away": null,
+          "home": 3,
+          "away": 0,
           "points": 0
         },
         "Cem": {
-          "home": null,
-          "away": null,
+          "home": 3,
+          "away": 0,
           "points": 0
         }
       }
@@ -2700,29 +2700,29 @@ const GAME_DATA: GameData = {
       "section": "Round of 32",
       "date": "04 Jul",
       "time": "00:00",
-      "home": "Winner K",
-      "away": "3rd from D/E/I/J/L",
+      "home": "Colombia",
+      "away": "Ghana",
       "home_score": null,
       "away_score": null,
       "guesses": {
         "Anil": {
-          "home": null,
-          "away": null,
+          "home": 2,
+          "away": 2,
           "points": 0
         },
         "Emre": {
-          "home": null,
-          "away": null,
+          "home": 1,
+          "away": 1,
           "points": 0
         },
         "Enes": {
-          "home": null,
-          "away": null,
+          "home": 1,
+          "away": 0,
           "points": 0
         },
         "Cem": {
-          "home": null,
-          "away": null,
+          "home": 0,
+          "away": 1,
           "points": 0
         }
       }
@@ -2731,29 +2731,29 @@ const GAME_DATA: GameData = {
       "section": "Round of 32",
       "date": "04 Jul",
       "time": "03:30",
-      "home": "Runner-up D",
-      "away": "Runner-up G",
+      "home": "Australia",
+      "away": "Egypt",
       "home_score": null,
       "away_score": null,
       "guesses": {
         "Anil": {
-          "home": null,
-          "away": null,
+          "home": 1,
+          "away": 3,
           "points": 0
         },
         "Emre": {
-          "home": null,
-          "away": null,
+          "home": 0,
+          "away": 2,
           "points": 0
         },
         "Enes": {
-          "home": null,
-          "away": null,
+          "home": 0,
+          "away": 1,
           "points": 0
         },
         "Cem": {
-          "home": null,
-          "away": null,
+          "home": 1,
+          "away": 2,
           "points": 0
         }
       }
