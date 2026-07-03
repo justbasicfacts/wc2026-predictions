@@ -61,8 +61,20 @@ async function fetchDate(dateStr: string): Promise<FetchedScore[]> {
     const aTeam = aC.team as Record<string, string>;
     const hName = hTeam?.displayName || hTeam?.name || '';
     const aName = aTeam?.displayName || aTeam?.name || '';
-    const hScore = parseInt(hC.score as string) || 0;
-    const aScore = parseInt(aC.score as string) || 0;
+    const hScoreFull = parseInt(hC.score as string) || 0;
+    const aScoreFull = parseInt(aC.score as string) || 0;
+
+    // For elimination matches, count only regulation-time (first 90 min) goals.
+    // ESPN's `linescores` splits by period: 1 = 1st half, 2 = 2nd half,
+    // 3 = 1st ET, 4 = 2nd ET, 5 = penalty shootout. Sum of periods 1+2 = 90-min score.
+    const hLs = hC.linescores as Array<{ value?: number }> | undefined;
+    const aLs = aC.linescores as Array<{ value?: number }> | undefined;
+    const hScore90 = hLs && hLs.length >= 2
+      ? (hLs[0]?.value ?? 0) + (hLs[1]?.value ?? 0)
+      : hScoreFull;
+    const aScore90 = aLs && aLs.length >= 2
+      ? (aLs[0]?.value ?? 0) + (aLs[1]?.value ?? 0)
+      : aScoreFull;
 
     const kickoffUtc = ev.date as string | undefined;
 
@@ -95,6 +107,11 @@ async function fetchDate(dateStr: string): Promise<FetchedScore[]> {
     }
 
     for (const m of GAME_DATA.matches) {
+      // Group-stage matches always end at 90; knockout matches must ignore ET.
+      const isKnockout = !m.section.startsWith('Group ');
+      const hScore = isKnockout ? hScore90 : hScoreFull;
+      const aScore = isKnockout ? aScore90 : aScoreFull;
+
       let hs: number, as_: number;
       let flipped = false;
       if (teamsMatch(m.home, hName) && teamsMatch(m.away, aName)) {
