@@ -67,3 +67,19 @@ export interface Standing {
 
 export type ScoreStatus = 'live' | 'ft' | 'upcoming';
 export type PredClass = 'exact' | 'tendency' | 'miss' | 'pending' | 'none';
+
+/** Per-match live/finished stats collected from ESPN scoreboard `details` array. */
+export interface MatchStats {
+  reds: number;
+  scorers: string[];
+}
+
+/** Aggregate tournament-wide stats used to display ongoing expert-question results. */
+export interface ExpertStats {
+  totalGoals: number;
+  totalReds: number;
+  /** Ranked leaders (top first). Empty when ESPN hasn't returned scorer plays yet. */
+  topScorers: Array<{ name: string; goals: number }>;
+  /** Number of matches that have already produced a final or live score. */
+  matchesCounted: number;
+}

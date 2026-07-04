@@ -49,7 +49,7 @@ const LEGEND = [
 ];
 
 export default function App() {
-  const { scores, odds, kickoffs, info, forceRefresh } = useScores();
+  const { scores, odds, kickoffs, info, expertStats, forceRefresh } = useScores();
   const [section, setSection] = useState('all');
   // info.lastUpdated changes every fetch; scores is a stable object ref so alone won't trigger useMemo
   const standings = useMemo(() => calcStandings(scores), [scores, info.lastUpdated]);
@@ -87,7 +87,7 @@ export default function App() {
 
         <SectionTabs sections={ALL_SECTIONS} active={section} onChange={setSection} />
         <MatchList matches={GAME_DATA.matches} scores={scores} odds={odds} kickoffs={kickoffs} section={section} />
-        <ExpertSection questions={GAME_DATA.expert_questions} />
+        <ExpertSection questions={GAME_DATA.expert_questions} stats={expertStats} />
       </Box>
     </Box>
   );

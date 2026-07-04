@@ -1,9 +1,9 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { scoreKey, teamsMatch } from '../utils/teamNames';
 import { playGoalSound } from '../utils/sound';
 import { showGoalNotification } from '../utils/notifications';
 import GAME_DATA from '../data/gameData';
-import type { ScoreRecord, ScoreInfo, MatchOdds } from '../types';
+import type { ScoreRecord, ScoreInfo, MatchOdds, MatchStats, ExpertStats } from '../types';
 
 const TOURNAMENT_START = new Date('2026-06-11');
 const REFRESH_IDLE_MS = 5 * 60 * 1000;
@@ -13,6 +13,7 @@ const REFRESH_LIVE_MS = 60 * 1000;
 const _scores: Record<string, ScoreRecord> = {};
 const _odds: Record<string, MatchOdds> = {};
 const _kickoffs: Record<string, string> = {}; // UTC ISO strings from ESPN
+const _stats: Record<string, MatchStats> = {}; // per-match red cards + goal scorers
 
 function getDates(full: boolean): string[] {
   if (!full) {
@@ -40,6 +41,33 @@ interface FetchedScore {
   odds: MatchOdds | null;
   oddsOnly?: boolean;
   kickoffUtc?: string; // UTC ISO string from ESPN (e.g. "2026-06-23T17:00Z")
+  stats?: MatchStats;
+}
+
+/** Extract red-card count and goal-scorer list from an ESPN competition's `details` array. */
+function extractMatchStats(comp: Record<string, unknown>): MatchStats {
+  const details = comp.details as Array<Record<string, unknown>> | undefined;
+  let reds = 0;
+  const scorers: string[] = [];
+  if (!Array.isArray(details)) return { reds, scorers };
+  for (const play of details) {
+    const type = play.type as Record<string, string> | undefined;
+    const label = (type?.text ?? '').toLowerCase();
+    const scoringPlay = play.scoringPlay === true;
+    const athletes = play.athletesInvolved as Array<Record<string, string>> | undefined;
+    const primary = athletes?.[0]?.displayName || athletes?.[0]?.shortName;
+    // Red card (straight or second yellow) — ESPN uses type ids/texts like
+    // "Red Card", "Straight Red Card", "Yellow-Red Card".
+    if (label.includes('red card') || label === 'red' || label.includes('sending')) {
+      reds += 1;
+    }
+    // Goal (excluding own goals — those don't credit an individual scorer for
+    // top-scorer purposes). Penalty goals & headers still count.
+    if (scoringPlay && primary) {
+      if (!label.includes('own goal')) scorers.push(primary);
+    }
+  }
+  return { reds, scorers };
 }
 
 async function fetchDate(dateStr: string): Promise<FetchedScore[]> {
@@ -106,6 +134,11 @@ async function fetchDate(dateStr: string): Promise<FetchedScore[]> {
       }
     }
 
+    // Per-match statistics (goal scorers, red cards) live only in `details` and
+    // only for live/finished events. Extract once per event and share across
+    // gameData match candidates.
+    const stats = isLive || isFt ? extractMatchStats(comp) : undefined;
+
     for (const m of GAME_DATA.matches) {
       // Group-stage matches always end at 90; knockout matches must ignore ET.
       const isKnockout = !m.section.startsWith('Group ');
@@ -127,7 +160,7 @@ async function fetchDate(dateStr: string): Promise<FetchedScore[]> {
         : odds;
 
       if (isLive || isFt) {
-        out.push({ key: scoreKey(m.home, m.away), hs, as_, status: isLive ? 'live' : 'ft', clock, odds: matchOdds, kickoffUtc });
+        out.push({ key: scoreKey(m.home, m.away), hs, as_, status: isLive ? 'live' : 'ft', clock, odds: matchOdds, kickoffUtc, stats });
       } else if (isPre) {
         // For upcoming matches: store kickoff time + odds (no score)
         out.push({ key: scoreKey(m.home, m.away), hs: 0, as_: 0, status: 'ft', clock: null, odds: matchOdds, oddsOnly: true, kickoffUtc });
@@ -143,7 +176,7 @@ function formatML(val: string): string {
   return n > 0 ? `+${n}` : String(n);
 }
 
-export function useScores(): { scores: Record<string, ScoreRecord>; odds: Record<string, MatchOdds>; kickoffs: Record<string, string>; info: ScoreInfo; forceRefresh: () => void } {
+export function useScores(): { scores: Record<string, ScoreRecord>; odds: Record<string, MatchOdds>; kickoffs: Record<string, string>; info: ScoreInfo; expertStats: ExpertStats; forceRefresh: () => void } {
   const [tick, setTick] = useState(0);
   const [info, setInfo] = useState<ScoreInfo>({ loading: true, lastUpdated: null, count: 0, espnOk: null });
   const fullDone = useRef(false);
@@ -192,6 +225,9 @@ export function useScores(): { scores: Record<string, ScoreRecord>; odds: Record
           if (existing?.status === 'ft' && r.status === 'live') continue;
           _scores[r.key] = { matchKey: r.key, hs: r.hs, as_: r.as_, status: r.status, clock: r.clock, savedAt: Date.now() };
           if (r.status === 'live') prevLive.current[r.key] = { hs: r.hs, as_: r.as_ };
+
+          // Cache per-match stats (last-write-wins so live-update refreshes work).
+          if (r.stats) _stats[r.key] = r.stats;
         }
       }
 
@@ -238,7 +274,32 @@ export function useScores(): { scores: Record<string, ScoreRecord>; odds: Record
     };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  void tick;
+  // Aggregate ongoing expert-question results whenever scores/stats update.
+  const expertStats = useMemo<ExpertStats>(() => {
+    let totalGoals = 0;
+    let totalReds = 0;
+    const scorerCounts: Record<string, number> = {};
+    let matchesCounted = 0;
+    for (const key of Object.keys(_scores)) {
+      const rec = _scores[key];
+      totalGoals += rec.hs + rec.as_;
+      matchesCounted += 1;
+      const st = _stats[key];
+      if (st) {
+        totalReds += st.reds;
+        for (const name of st.scorers) {
+          scorerCounts[name] = (scorerCounts[name] ?? 0) + 1;
+        }
+      }
+    }
+    const topScorers = Object.entries(scorerCounts)
+      .map(([name, goals]) => ({ name, goals }))
+      .sort((a, b) => b.goals - a.goals || a.name.localeCompare(b.name))
+      .slice(0, 10);
+    return { totalGoals, totalReds, topScorers, matchesCounted };
+    // tick + info.lastUpdated together capture every completed fetch.
+  }, [tick, info.lastUpdated]);
+
   const forceRefresh = () => void runFetch(false);
-  return { scores: _scores, odds: _odds, kickoffs: _kickoffs, info, forceRefresh };
+  return { scores: _scores, odds: _odds, kickoffs: _kickoffs, info, expertStats, forceRefresh };
 }
