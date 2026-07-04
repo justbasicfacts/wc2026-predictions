@@ -16,8 +16,9 @@ const _kickoffs: Record<string, string> = {}; // UTC ISO strings from ESPN
 const _stats: Record<string, MatchStats> = {}; // per-match red cards + goal scorers
 /** Per-event summary cache. Key = ESPN event ID.
  *  regH/regA = goals in regulation (period ≤ 2) — the 90-minute score.
- *  aet indicates the match actually went to extra time (so regH === regA). */
-const _summaries: Record<string, { regH: number; regA: number; aet: boolean; stats: MatchStats }> = {};
+ *  totalH/totalA = all goals excluding shootouts (used for FT consistency check).
+ *  aet indicates the match actually went to extra time. */
+const _summaries: Record<string, { regH: number; regA: number; totalH: number; totalA: number; aet: boolean; stats: MatchStats }> = {};
 
 function getDates(full: boolean): string[] {
   if (!full) {
@@ -55,15 +56,19 @@ interface FetchedScore {
   aFullEspn?: number;
 }
 
-/** Walk an array of plays and extract red-card + goal-scorer + regulation-score info. */
+/** Walk an array of plays and extract red-card + goal-scorer + regulation-score info.
+ *  totalGoals is every scoring play we counted across all periods (excluding
+ *  penalty-shootout period 5) — callers use it to sanity-check against ESPN's
+ *  reported FT score before trusting the regulation split. */
 function analysePlays(
   plays: Array<Record<string, unknown>>,
   espnHomeTeamId: string,
   espnAwayTeamId: string,
-): { regH: number; regA: number; aet: boolean; stats: MatchStats } {
+): { regH: number; regA: number; totalH: number; totalA: number; aet: boolean; stats: MatchStats } {
   let reds = 0;
   const scorers: string[] = [];
   let regH = 0, regA = 0;
+  let totalH = 0, totalA = 0;
   let aet = false;
   for (const play of plays) {
     const type = play.type as Record<string, string> | undefined;
@@ -72,24 +77,26 @@ function analysePlays(
     const athletes = play.athletesInvolved as Array<Record<string, string>> | undefined;
     const primary = athletes?.[0]?.displayName || athletes?.[0]?.shortName;
     const period = ((play.period as Record<string, number>)?.number) ?? 0;
-    if (period > 2) aet = true;
+    if (period > 2 && period < 5) aet = true;
 
     if (label.includes('red card') || label === 'red' || label.includes('sending')) {
       reds += 1;
     }
     if (scoringPlay) {
       if (primary && !label.includes('own goal')) scorers.push(primary);
-      // For regulation goals (period 1 = 1st half, period 2 = 2nd half),
-      // count by team id. Own goals credit the OPPONENT — ESPN's play "team"
-      // field represents the team credited with the goal in either case.
+      const tid = String(((play.team as Record<string, string>)?.id) ?? '');
+      // Penalty shootout (period 5 in ESPN soccer) doesn't count for score.
+      if (period === 5) continue;
+      if (tid === espnHomeTeamId) totalH += 1;
+      else if (tid === espnAwayTeamId) totalA += 1;
+      // Regulation goals only (period 1 = 1st half, period 2 = 2nd half).
       if (period > 0 && period <= 2) {
-        const tid = String(((play.team as Record<string, string>)?.id) ?? '');
         if (tid === espnHomeTeamId) regH += 1;
         else if (tid === espnAwayTeamId) regA += 1;
       }
     }
   }
-  return { regH, regA, aet, stats: { reds, scorers } };
+  return { regH, regA, totalH, totalA, aet, stats: { reds, scorers } };
 }
 
 /** Legacy path — used only for stats aggregation before summary lands (or if it fails). */
@@ -99,8 +106,9 @@ function extractMatchStats(comp: Record<string, unknown>): MatchStats {
   return analysePlays(details, '', '').stats;
 }
 
-/** Fetch and cache the per-event summary from ESPN. Returns regulation score
- *  computed from period ≤ 2 scoring plays, plus reds/scorers. Null on failure. */
+/** Fetch and cache the per-event summary from ESPN. Returns null if the
+ *  response is missing, empty, or otherwise unparseable — callers must fall
+ *  back to the scoreboard's FT score in that case. */
 async function fetchEventSummary(eventId: string): Promise<typeof _summaries[string] | null> {
   const cached = _summaries[eventId];
   if (cached) return cached;
@@ -115,9 +123,20 @@ async function fetchEventSummary(eventId: string): Promise<typeof _summaries[str
     const homeTeamId = String(((competitors.find(c => c.homeAway === 'home')?.team as Record<string, string> | undefined)?.id) ?? '');
     const awayTeamId = String(((competitors.find(c => c.homeAway === 'away')?.team as Record<string, string> | undefined)?.id) ?? '');
     if (!homeTeamId || !awayTeamId) return null;
-    const plays = (data.plays as Array<Record<string, unknown>>) || [];
+    // ESPN soccer summary exposes plays under a few possible names depending on
+    // event stage / population state. Try each in order.
+    const playSources: Array<Array<Record<string, unknown>>> = [];
+    for (const key of ['plays', 'keyEvents', 'scoringPlays'] as const) {
+      const arr = data[key];
+      if (Array.isArray(arr) && arr.length > 0) playSources.push(arr as Array<Record<string, unknown>>);
+    }
+    if (playSources.length === 0) return null;
+    // Use the richest source (most entries).
+    const plays = playSources.reduce((a, b) => (b.length > a.length ? b : a));
     const result = analysePlays(plays, homeTeamId, awayTeamId);
-    _summaries[eventId] = result;
+    // Only cache once we've seen at least one scoring play — otherwise ESPN
+    // hasn't populated the data yet and we want to retry next refresh.
+    if (result.totalH + result.totalA > 0) _summaries[eventId] = result;
     return result;
   } catch (e) {
     console.warn('[useScores] summary fetch failed for event', eventId, e);
@@ -241,24 +260,55 @@ export function useScores(): { scores: Record<string, ScoreRecord>; odds: Record
         .filter((r): r is PromiseFulfilledResult<FetchedScore[]> => r.status === 'fulfilled')
         .flatMap(r => r.value);
 
-      // Second pass: for knockout matches (live or finished), fetch the summary
-      // endpoint to get per-period plays so we can compute the 90-min score and
-      // extract goal-scorer / red-card details reliably. Results are cached per
-      // event id so we only pay this cost once per completed match.
+      // Second pass: for knockout matches, try to fetch a per-event summary so
+      // we can substitute the 90-minute score (needed to ignore extra-time
+      // goals). We only apply the summary's regulation split if:
+      //   1. ESPN returned plays we could parse, AND
+      //   2. the summed goals (excluding shootouts) match ESPN's reported FT
+      //      score exactly — that's our proof the parse was complete.
+      // If either check fails we KEEP the FT score from the scoreboard rather
+      // than overwriting it with a possibly-empty 0-0 from the summary.
       const knockoutFetches = results
         .filter(r => r.isKnockout && r.eventId && !r.oddsOnly)
         .map(async r => {
           const summary = await fetchEventSummary(r.eventId!);
           if (!summary) return;
-          // Apply the 90-min score. ESPN's summary reports home/away from its
-          // own perspective; if gameData had the teams flipped we swap back.
+
+          // ESPN reports home/away from its own perspective; unflip if needed.
+          const espnHomeTotal = summary.totalH;
+          const espnAwayTotal = summary.totalA;
+          const expectedH = r.hFullEspn ?? 0;
+          const expectedA = r.aFullEspn ?? 0;
+
+          // Consistency check: summary's total goals (all non-shootout goals)
+          // must match ESPN's scoreboard-reported FT score. Any mismatch means
+          // the plays list is incomplete or the team-id join failed.
+          const parseComplete =
+            espnHomeTotal === expectedH &&
+            espnAwayTotal === expectedA &&
+            expectedH + expectedA > 0;
+
+          // Always update stats (goal scorers / reds) if we found any.
+          if (summary.stats.scorers.length > 0 || summary.stats.reds > 0) {
+            r.stats = summary.stats;
+          }
+
+          if (!parseComplete) {
+            console.warn(
+              '[useScores] summary parse incomplete for event', r.eventId,
+              'ESPN FT', expectedH, '-', expectedA,
+              'summary total', espnHomeTotal, '-', espnAwayTotal,
+              '— keeping FT score',
+            );
+            return;
+          }
+
+          // Parse looks trustworthy — substitute the 90-minute score. Preserve
+          // whatever home/away orientation gameData uses.
           const regHome = r.flipped ? summary.regA : summary.regH;
           const regAway = r.flipped ? summary.regH : summary.regA;
           r.hs = regHome;
           r.as_ = regAway;
-          // Prefer the richer summary-derived stats (they include the full play
-          // list — the scoreboard `details` slice is often abbreviated).
-          r.stats = summary.stats;
         });
       await Promise.allSettled(knockoutFetches);
 
