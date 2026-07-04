@@ -2809,8 +2809,8 @@ const GAME_DATA: GameData = {
           "points": 0
         },
         "Enes": {
-          "home": 2,
-          "away": 1,
+          "home": 1,
+          "away": 2,
           "points": 0
         },
         "Cem": {
@@ -2835,8 +2835,8 @@ const GAME_DATA: GameData = {
           "points": 0
         },
         "Emre": {
-          "home": 2,
-          "away": 1,
+          "home": 1,
+          "away": 2,
           "points": 0
         },
         "Enes": {
@@ -2845,8 +2845,8 @@ const GAME_DATA: GameData = {
           "points": 0
         },
         "Cem": {
-          "home": 1,
-          "away": 2,
+          "home": 2,
+          "away": 1,
           "points": 0
         }
       }
@@ -2866,13 +2866,13 @@ const GAME_DATA: GameData = {
           "points": 0
         },
         "Emre": {
-          "home": 2,
-          "away": 1,
+          "home": 1,
+          "away": 2,
           "points": 0
         },
         "Enes": {
-          "home": 2,
-          "away": 1,
+          "home": 1,
+          "away": 2,
           "points": 0
         },
         "Cem": {
@@ -2907,8 +2907,8 @@ const GAME_DATA: GameData = {
           "points": 0
         },
         "Cem": {
-          "home": 2,
-          "away": 1,
+          "home": 1,
+          "away": 2,
           "points": 0
         }
       }
@@ -2959,13 +2959,13 @@ const GAME_DATA: GameData = {
           "points": 0
         },
         "Emre": {
-          "home": 1,
-          "away": 2,
+          "home": 2,
+          "away": 1,
           "points": 0
         },
         "Enes": {
-          "home": 1,
-          "away": 2,
+          "home": 2,
+          "away": 1,
           "points": 0
         },
         "Cem": {
@@ -2990,18 +2990,18 @@ const GAME_DATA: GameData = {
           "points": 0
         },
         "Emre": {
+          "home": 1,
+          "away": 2,
+          "points": 0
+        },
+        "Enes": {
           "home": 2,
           "away": 1,
           "points": 0
         },
-        "Enes": {
-          "home": 1,
-          "away": 2,
-          "points": 0
-        },
         "Cem": {
-          "home": 1,
-          "away": 2,
+          "home": 2,
+          "away": 1,
           "points": 0
         }
       }
