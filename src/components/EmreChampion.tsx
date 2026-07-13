@@ -168,7 +168,7 @@ export default function EmreChampion() {
           }}
         >
           <img
-            src="/emre-champion.jpg"
+            src={`${import.meta.env.BASE_URL}emre-champion.jpg`}
             alt="Emre the champion"
             onError={(e) => {
               // If the file is missing, hide the img and show a fallback badge.
