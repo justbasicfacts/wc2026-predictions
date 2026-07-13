@@ -139,23 +139,54 @@ export default function EmreChampion() {
     >
       <ConfettiCanvas />
 
-      <Stack align="center" gap="lg" style={{ position: 'relative', zIndex: 10002, maxWidth: 640 }}>
-        <Text
-          fw={900}
-          ta="center"
-          style={{
-            fontSize: 'clamp(28px, 7vw, 56px)',
-            letterSpacing: 2,
-            background: 'linear-gradient(90deg,#f59e0b,#ef4444,#22c55e,#3b82f6,#a855f7)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text',
-            textShadow: '0 0 40px rgba(245,158,11,.35)',
-            lineHeight: 1.1,
-          }}
-        >
-          🏆 CONGRATULATIONS EMRE 🏆
-        </Text>
+      <Stack
+        align="center"
+        gap="lg"
+        style={{
+          position: 'relative',
+          zIndex: 10002,
+          maxWidth: 640,
+          width: '100%',
+        }}
+      >
+        <Box style={{ width: '100%', textAlign: 'center' }}>
+          <Text
+            fw={900}
+            style={{
+              // "CONGRATULATIONS" has 15 characters — scale to fit narrow
+              // screens without clipping. Cap around 44px on wide screens.
+              fontSize: 'clamp(20px, 5.4vw, 44px)',
+              letterSpacing: 1,
+              lineHeight: 1.05,
+              background: 'linear-gradient(90deg,#f59e0b,#ef4444,#22c55e,#3b82f6,#a855f7)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+              textShadow: '0 0 40px rgba(245,158,11,.35)',
+              overflowWrap: 'break-word',
+              wordBreak: 'break-word',
+              hyphens: 'auto',
+            }}
+          >
+            🏆 CONGRATULATIONS 🏆
+          </Text>
+          <Text
+            fw={900}
+            style={{
+              fontSize: 'clamp(28px, 9vw, 64px)',
+              letterSpacing: 3,
+              lineHeight: 1.05,
+              marginTop: 4,
+              background: 'linear-gradient(90deg,#f59e0b,#ef4444,#22c55e,#3b82f6,#a855f7)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+              textShadow: '0 0 40px rgba(245,158,11,.35)',
+            }}
+          >
+            EMRE
+          </Text>
+        </Box>
 
         <Box
           style={{
