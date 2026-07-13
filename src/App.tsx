@@ -8,6 +8,7 @@ import TodaySection from './components/TodaySection';
 import SectionTabs from './components/SectionTabs';
 import MatchList from './components/MatchList';
 import ExpertSection from './components/ExpertSection';
+import EmreChampion from './components/EmreChampion';
 import GAME_DATA from './data/gameData';
 import { calcPoints } from './utils/scoring';
 import { scoreKey } from './utils/teamNames';
@@ -56,6 +57,7 @@ export default function App() {
 
   return (
     <Box maw={720} mx="auto">
+      <EmreChampion />
       <InstallBanner />
       <Header info={info} onRefresh={forceRefresh} />
       <Box p="sm" pb={60}>
