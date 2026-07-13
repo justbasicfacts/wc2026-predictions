@@ -1,5 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { Box, Text, Button, Stack } from '@mantine/core';
+// Importing from src/assets/ lets Vite hash the filename on every build, so
+// any new photo automatically invalidates the browser + service-worker cache
+// (no manual version bump needed).
+import emreChampionPhoto from '../assets/emre-champion.jpg';
 
 /** localStorage key. Deleting this key from browser storage re-shows the modal. */
 const DISMISS_KEY = 'emre-champion-dismissed';
@@ -199,7 +203,7 @@ export default function EmreChampion() {
           }}
         >
           <img
-            src={`${import.meta.env.BASE_URL}emre-champion.jpg`}
+            src={emreChampionPhoto}
             alt="Emre the champion"
             onError={(e) => {
               // If the file is missing, hide the img and show a fallback badge.
