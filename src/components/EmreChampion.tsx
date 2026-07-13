@@ -97,7 +97,10 @@ function ConfettiCanvas() {
         position: 'fixed',
         inset: 0,
         pointerEvents: 'none',
-        zIndex: 10001,
+        // Render ABOVE the photo + text so confetti rains on top of the
+        // celebration instead of behind it. pointer-events:none keeps the
+        // Close button and image clickable through the canvas.
+        zIndex: 10010,
       }}
     />
   );
