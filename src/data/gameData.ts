@@ -3134,29 +3134,29 @@ const GAME_DATA: GameData = {
       "section": "Semifinals",
       "date": "14 Jul",
       "time": "21:00",
-      "home": "Winner Match 97",
-      "away": "Winner Match 98",
+      "home": "France",
+      "away": "Spain",
       "home_score": null,
       "away_score": null,
       "guesses": {
         "Anil": {
-          "home": null,
-          "away": null,
+          "home": 0,
+          "away": 0,
           "points": 0
         },
         "Emre": {
-          "home": null,
-          "away": null,
+          "home": 1,
+          "away": 2,
           "points": 0
         },
         "Enes": {
-          "home": null,
-          "away": null,
+          "home": 2,
+          "away": 0,
           "points": 0
         },
         "Cem": {
-          "home": null,
-          "away": null,
+          "home": 2,
+          "away": 0,
           "points": 0
         }
       }
@@ -3165,29 +3165,29 @@ const GAME_DATA: GameData = {
       "section": "Semifinals",
       "date": "15 Jul",
       "time": "21:00",
-      "home": "Winner Match 99",
-      "away": "Winner Match 100",
+      "home": "England",
+      "away": "Argentina",
       "home_score": null,
       "away_score": null,
       "guesses": {
         "Anil": {
-          "home": null,
-          "away": null,
+          "home": 1,
+          "away": 1,
           "points": 0
         },
         "Emre": {
-          "home": null,
-          "away": null,
+          "home": 2,
+          "away": 2,
           "points": 0
         },
         "Enes": {
-          "home": null,
-          "away": null,
+          "home": 1,
+          "away": 2,
           "points": 0
         },
         "Cem": {
-          "home": null,
-          "away": null,
+          "home": 2,
+          "away": 1,
           "points": 0
         }
       }
